@@ -32,11 +32,10 @@ export async function start() {
   wrapper.style.height = `${window.innerHeight - (document.querySelector(".navbar") as HTMLElement).clientHeight}px`
 
   wrapper.addEventListener("mousedown", (e) => {
-    console.log(e.target)
-    if (e.target instanceof SVGRectElement) {
-      const index = e.target.dataset.index || "0";
+    if ((e.target as HTMLElement).dataset.index !== undefined) {
+      const index = (e.target as HTMLElement).dataset.index || "0";
       if (index !== undefined) {
-        displayDeviceInfo(data.hosts.find(host => host.tcp_sequence.values == index) as Host);
+        displayDeviceInfo(data.hosts[parseInt(index)]);
       }
     }
 
@@ -160,14 +159,15 @@ function updateSvg() {
     rect.setAttribute("width", `${10}`);
     rect.setAttribute("height", `${10}`);
     rect.setAttribute("fill", `${false ? "red" : "black"}`);
-    rect.dataset.index = `${host.tcp_sequence.values}`;
+    rect.dataset.index = `${i}`;
     svg.appendChild(rect);
 
     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
     text.setAttribute("x", `0`);
     text.setAttribute("y", `${20 + height + 40 * i}`);
     text.setAttribute("fill", "black");
-    text.textContent = host.os.os_matches[0].name + " (" + host.os.os_matches[0].accuracy + "% accuracy)" || "Not detected";
+    text.dataset.index = `${i}`;
+    text.textContent = host.os.os_matches != null ? host.os.os_matches[0].name + " (" + host.os.os_matches[0].accuracy + "% accuracy)" : host.addresses.find(address => address.addr_type == "ipv4")?.addr || "Unknown";
     svg.appendChild(text);
   });
 
@@ -229,7 +229,7 @@ function displayDeviceInfo(device: Host) {
   sidePanel.appendChild(heading);
 
   const subHeading = document.createElement("h2");
-  subHeading.textContent = device.os.os_matches[0].name || "OS not detected";
+  subHeading.textContent = device.os.os_matches != null ? device.os.os_matches[0].name : "OS not detected";
   subHeading.classList.add("text-center", "text-xl", "font-semibold");
   sidePanel.appendChild(subHeading);
 
@@ -253,7 +253,7 @@ function displayDeviceInfo(device: Host) {
   tr1.appendChild(td1);
 
   const td2 = document.createElement("td");
-  td2.textContent = device.addresses.filter(address => address.addr_type == "mac").join(", ") || "Unknown";
+  td2.textContent = device.addresses.filter(address => address.addr_type == "mac").map(address => address.addr).join(", ");
   tr1.appendChild(td2);
 
   const tr2 = document.createElement("tr");
@@ -265,7 +265,7 @@ function displayDeviceInfo(device: Host) {
   tr2.appendChild(td3);
 
   const td4 = document.createElement("td");
-  td4.textContent = `${device.status.state} (${device.status.reason})` || "Unknown";
+  td4.textContent = device.status != null ? `${device.status.state} (${device.status.reason})` : "Unknown";
   tr2.appendChild(td4);
 
   const tr3 = document.createElement("tr");
@@ -277,7 +277,7 @@ function displayDeviceInfo(device: Host) {
   tr3.appendChild(td5);
 
   const td6 = document.createElement("td");
-  td6.textContent = device.hostnames.map(hostname => hostname.name).join(", ") || "Unknown";
+  td6.textContent = device.hostnames != null ? device.hostnames.map(hostname => hostname.name).join(", ") : "Unknown";
   tr3.appendChild(td6);
 
   const tr4 = document.createElement("tr");
@@ -289,7 +289,7 @@ function displayDeviceInfo(device: Host) {
   tr4.appendChild(td7);
 
   const td8 = document.createElement("td");
-  td8.textContent = `${device.uptime.last_boot} (${device.uptime.seconds}s)` || "Unknown";
+  td8.textContent = device.uptime != null ? `${device.uptime.last_boot} (${device.uptime.seconds}s)` : "Unknown";
   tr4.appendChild(td8);
 
   const hr2 = document.createElement("hr");
