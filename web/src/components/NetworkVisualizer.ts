@@ -228,10 +228,8 @@ function displayDeviceInfo(device: Host) {
   heading.classList.add("text-accent", "text-center", "text-2xl", "font-bold", "pt-4");
   sidePanel.appendChild(heading);
 
-  const osMatchesStrings: string[] = device.os.os_matches.map((match) => match.name);
-  const commaSeparatedOsMatches: string = osMatchesStrings.join(', ');
   const subHeading = document.createElement("h2");
-  subHeading.textContent = commaSeparatedOsMatches || "OS not detected";
+  subHeading.textContent = device.os.os_matches[0].name || "OS not detected";
   subHeading.classList.add("text-center", "text-xl", "font-semibold");
   sidePanel.appendChild(subHeading);
 
