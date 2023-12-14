@@ -1,0 +1,41 @@
+<script setup lang="ts">
+import { start, resetPositionAndScale } from './NetworkVisualizer';
+import { onMounted } from 'vue';
+import CrosshairIcon from '@/components/icons/CrosshairIcon.vue'
+import CloseIcon from '@/components/icons/CloseIcon.vue'
+import NetworkIcon from '@/components/icons/NetworkIcon.vue'
+
+onMounted(() => {
+  start()
+})
+
+</script>
+
+<template>
+  <div class="canvas-wrapper z-[-1]"></div>
+
+  <div class="tool-wrapper">
+    
+    <button class="device-info-close absolute right-[-10px] btn btn-square rounded-sm btn-accent btn-outline z-10 bg-base-100">
+      <CloseIcon/>
+    </button>
+
+    <div class="side-panel device-info w-1/5
+    z-1 border-y-4 border-l-4 overflow-scroll p-2 mb-2 bg-base-300 shadow-lg
+      rounded-l border-base-content opacity-90 absolute right-[-3rem] whitespace-break-spaces"
+    >
+  </div>
+    <div class="toolbar z-1 bottom-0 left-0 absolute m-4">
+      <div class="tooltip tooltip-right tooltip-info" data-tip="reset canvas position">
+        <button class="btn btn-square btn-accent btn-outline mr-2" @click="resetPositionAndScale()">
+          <CrosshairIcon/>
+        </button>
+      </div>
+      <div class="tooltip tooltip-right tooltip-info" data-tip="new network scan">
+        <button class="btn btn-square btn-accent btn-outline mr-2" @click="resetPositionAndScale()">
+          <NetworkIcon/>
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
