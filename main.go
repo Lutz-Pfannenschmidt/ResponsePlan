@@ -62,13 +62,13 @@ func main() {
 	manager.On("scan", func(conn *websocket.Conn, message []byte) {
 		scanner, err := nmap.NewScanner(
 			context.Background(),
-			nmap.WithTargets("192.168.188.1/24"),
+			nmap.WithTargets("scanme.nmap.org"),
 			nmap.WithPorts("1-1000"),
 			nmap.WithServiceInfo(),
 			nmap.WithVerbosity(3),
 			nmap.WithOSDetection(),
 			nmap.WithFilterHost(func(h nmap.Host) bool {
-				return h.Status.State == "up"
+				return h.Status.State != "down"
 			}),
 		)
 		if err != nil {

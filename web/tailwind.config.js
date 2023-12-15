@@ -10,7 +10,14 @@ module.exports = {
   },
   plugins: [require("daisyui")],
   daisyui: {
-    themes: ["business", "corporate"],
+    themes: [
+      "business",
+    {
+      light: {
+        ...require("daisyui/src/theming/themes")["corporate"],
+        accent: "oklch(0.67271 0.167726 35.7915)",
+      },
+    },],
   },
 }
 

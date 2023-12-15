@@ -3,7 +3,7 @@ import SunIcon from './icons/SunIcon.vue';
 import MoonIcon from './icons/MoonIcon.vue';
 import { onMounted } from 'vue';
 
-function setTheme(theme: "business" | "corporate") {
+function setTheme(theme: "business" | "light") {
   console.log("switch")
   const switcher = document.querySelector("input#theme-switch") as HTMLInputElement
   switcher.checked = theme === "business"
@@ -13,7 +13,7 @@ function setTheme(theme: "business" | "corporate") {
 
 function switchTheme() {
   const curr = document.documentElement.dataset.theme || "business"
-  setTheme(curr === "corporate" ? "business" : "corporate" )
+  setTheme(curr === "light" ? "business" : "light" )
 }
 
 onMounted(() => {
@@ -23,7 +23,7 @@ onMounted(() => {
   const localStorageTheme = window.localStorage.getItem("theme")
   const prefersbusinessMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: business)').matches;
   switcher.checked = localStorageTheme ? localStorageTheme === "business" : prefersbusinessMode
-  document.documentElement.dataset.theme = switcher.checked ? "business" : "corporate"
+  document.documentElement.dataset.theme = switcher.checked ? "business" : "light"
 })
 
 </script>
