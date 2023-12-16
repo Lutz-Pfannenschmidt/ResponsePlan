@@ -55,7 +55,7 @@ func main() {
 	manager := ws.NewConnectionManager()
 
 	manager.On("ping", func(conn *websocket.Conn, message []byte) {
-		fmt.Println("recieved:", string(message), "from", conn.RemoteAddr().String())
+		fmt.Println("received:", string(message), "from", conn.RemoteAddr().String())
 		conn.WriteMessage(websocket.TextMessage, []byte("pong"))
 	})
 
