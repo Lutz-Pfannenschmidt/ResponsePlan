@@ -31,7 +31,7 @@ var favicon []byte
 
 func main() {
 
-	parser := argparse.NewParser("print", "Prints provided string to stdout")
+	parser := argparse.NewParser("ResponsePlan", "A simple web application for incidence response.")
 
 	// keepData := parser.Flag("k", "keep", &argparse.Options{Help: "Save the data in a database."})
 	port := parser.Int("p", "port", &argparse.Options{Help: "The port to run Responseplan on.", Default: 1337})
