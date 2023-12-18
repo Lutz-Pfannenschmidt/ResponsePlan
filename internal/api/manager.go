@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/db"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/db/models"
@@ -27,7 +28,7 @@ func NewApiManager(database *db.Database, logger *logging.Logger) *ApiManager {
 }
 
 func (a *ApiManager) HandleApiRequest(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	if r.URL.Path == "/api/scan" {
+	if strings.HasPrefix(r.URL.Path, "/api/scan") {
 		id := uuid.New().String()
 		w.Write([]byte(id))
 
