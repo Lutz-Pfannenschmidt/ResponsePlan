@@ -14,6 +14,7 @@ require (
 require (
 	github.com/Ullaakut/nmap/v3 v3.0.2
 	github.com/fatih/color v1.16.0
+	github.com/google/uuid v1.5.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/julienschmidt/httprouter v1.3.0
 )

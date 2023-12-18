@@ -11,6 +11,8 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/api"
+	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/db"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/httpstring"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/logging"
 	ws "github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/websocket"
@@ -36,6 +38,8 @@ func main() {
 	// keepData := parser.Flag("k", "keep", &argparse.Options{Help: "Save the data in a database."})
 	port := parser.Int("p", "port", &argparse.Options{Help: "The port to run Responseplan on.", Default: 1337})
 	debugFlag := parser.Flag("d", "debug", &argparse.Options{Help: "For additional logging."})
+
+	database := db.NewDatabase()
 
 	err := parser.Parse(os.Args)
 	if err != nil {
@@ -101,9 +105,13 @@ func main() {
 	})
 
 	router := httprouter.New()
+	apiManager := api.NewApiManager(database, logger)
 
 	// WebSocket endpoint handler
 	router.GET("/ws", wsManager.HandleWebSocket)
+
+	// API endpoint handler
+	router.GET("/api/*path", apiManager.HandleApiRequest)
 
 	// Static file server
 	router.ServeFiles("/assets/*filepath", http.FS(assetsFs))
@@ -116,5 +124,4 @@ func main() {
 	// Start the HTTP server
 	logger.Log("Serving at http://localhost:" + strconv.Itoa(*port) + " ...")
 	http.ListenAndServe(":"+strconv.Itoa(*port), router)
-
 }
