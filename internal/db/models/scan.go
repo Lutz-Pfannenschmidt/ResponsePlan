@@ -3,11 +3,11 @@ package models
 import "github.com/Ullaakut/nmap/v3"
 
 type Scan struct {
-	Subnets   map[string]SubnetScan `json:"subnets"`
-	OSScan    bool                  `json:"osScan"`
-	PortScan  bool                  `json:"portScan"`
-	StartTime int                   `json:"startTime"`
-	EndTime   int                   `json:"endTime"`
+	Subnets   *map[string]SubnetScan `json:"subnets"`
+	OSScan    bool                   `json:"osScan"`
+	PortScan  bool                   `json:"portScan"`
+	StartTime int                    `json:"startTime"`
+	EndTime   int                    `json:"endTime"`
 }
 
 type SubnetScan struct {

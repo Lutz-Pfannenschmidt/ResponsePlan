@@ -35,6 +35,7 @@ func (a *ApiManager) HandleApiRequest(w http.ResponseWriter, r *http.Request, p 
 		go func() {
 			scanner, err := nmap.NewScanner(
 				context.Background(),
+
 				nmap.WithTargets("scanme.nmap.org"),
 				nmap.WithPorts("1-1000"),
 				nmap.WithServiceInfo(),
@@ -66,7 +67,7 @@ func (a *ApiManager) HandleApiRequest(w http.ResponseWriter, r *http.Request, p 
 
 			fmt.Printf("Nmap done: %d hosts up scanned in %.2f seconds\n", len(result.Hosts), result.Stats.Finished.Elapsed)
 			a.Database.Data[id] = models.Scan{
-				Subnets: map[string]models.SubnetScan{
+				Subnets: &map[string]models.SubnetScan{
 					"test": {
 						Subnet: "test",
 						Result: result,
