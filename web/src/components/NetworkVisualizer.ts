@@ -167,7 +167,7 @@ function updateSvg() {
     text.setAttribute("y", `${20 + height + 40 * i}`);
     text.classList.add("fill-base-content")
     text.dataset.index = `${i}`;
-    text.textContent = host.os.os_matches != null ? host.os.os_matches[0].name + " (" + host.os.os_matches[0].accuracy + "% accuracy)" : host.addresses.find(address => address.addr_type == "ipv4")?.addr || "Unknown";
+    text.textContent = host.addresses.map(address => address.addr).join(", ");
     svg.appendChild(text);
   });
 
