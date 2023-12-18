@@ -52,14 +52,14 @@ func main() {
 		panic(err)
 	}
 
-	manager := ws.NewConnectionManager()
+	wsManager := ws.NewConnectionManager()
 
-	manager.On("ping", func(conn *websocket.Conn, message []byte) {
+	wsManager.On("ping", func(conn *websocket.Conn, message []byte) {
 		fmt.Println("received:", string(message), "from", conn.RemoteAddr().String())
 		conn.WriteMessage(websocket.TextMessage, []byte("pong"))
 	})
 
-	manager.On("scan", func(conn *websocket.Conn, message []byte) {
+	wsManager.On("scan", func(conn *websocket.Conn, message []byte) {
 		scanner, err := nmap.NewScanner(
 			context.Background(),
 			nmap.WithTargets("scanme.nmap.org"),
@@ -103,7 +103,7 @@ func main() {
 	router := httprouter.New()
 
 	// WebSocket endpoint handler
-	router.GET("/ws", manager.HandleWebSocket)
+	router.GET("/ws", wsManager.HandleWebSocket)
 
 	// Static file server
 	router.ServeFiles("/assets/*filepath", http.FS(assetsFs))
