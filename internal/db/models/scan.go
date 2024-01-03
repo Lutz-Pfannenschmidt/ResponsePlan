@@ -6,8 +6,8 @@ type Scan struct {
 	Subnets   *map[string]SubnetScan `json:"subnets"`
 	OSScan    bool                   `json:"osScan"`
 	PortScan  bool                   `json:"portScan"`
-	StartTime int                    `json:"startTime"`
-	EndTime   int                    `json:"endTime"`
+	StartTime int64                  `json:"startTime"`
+	EndTime   int64                  `json:"endTime"`
 }
 
 type SubnetScan struct {

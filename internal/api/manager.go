@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/db"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/db/models"
@@ -28,9 +29,18 @@ func NewApiManager(database *db.Database, logger *logging.Logger) *ApiManager {
 }
 
 func (a *ApiManager) HandleApiRequest(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Print(r.URL.Path)
 	if strings.HasPrefix(r.URL.Path, "/api/scan") {
 		id := uuid.New().String()
 		w.Write([]byte(id))
+
+		a.Database.Data[id] = models.Scan{
+			Subnets:   &map[string]models.SubnetScan{},
+			OSScan:    true,
+			PortScan:  true,
+			StartTime: time.Now().Unix(),
+			EndTime:   0,
+		}
 
 		go func() {
 			scanner, err := nmap.NewScanner(
@@ -49,15 +59,16 @@ func (a *ApiManager) HandleApiRequest(w http.ResponseWriter, r *http.Request, p 
 				log.Fatalf("unable to create nmap scanner: %v", err)
 			}
 
-			progress := make(chan float32, 1)
+			// progress := make(chan float32, 1)
 
-			go func() {
-				for p := range progress {
-					fmt.Printf("Progress: %v %%\n", p)
-				}
-			}()
+			// go func() {
+			// 	for p := range progress {
+			// 		fmt.Printf("Progress: %v %%\n", p)
+			// 	}
+			// }()
 
-			result, warnings, err := scanner.Progress(progress).Run()
+			// result, warnings, err := scanner.Progress(progress).Run()
+			result, warnings, err := scanner.Run()
 			if len(*warnings) > 0 {
 				log.Printf("run finished with warnings: %s\n", *warnings)
 			}
@@ -66,18 +77,19 @@ func (a *ApiManager) HandleApiRequest(w http.ResponseWriter, r *http.Request, p 
 			}
 
 			fmt.Printf("Nmap done: %d hosts up scanned in %.2f seconds\n", len(result.Hosts), result.Stats.Finished.Elapsed)
-			a.Database.Data[id] = models.Scan{
-				Subnets: &map[string]models.SubnetScan{
+
+			if entry, ok := a.Database.Data[id]; ok {
+				entry.EndTime = time.Now().Unix()
+				entry.Subnets = &map[string]models.SubnetScan{
 					"test": {
 						Subnet: "test",
 						Result: result,
 					},
-				},
-				OSScan:    true,
-				PortScan:  true,
-				StartTime: 0,
-				EndTime:   0,
+				}
+
+				a.Database.Data[id] = entry
 			}
+
 			err = a.Database.SaveToFile("test.json")
 			if err != nil {
 				panic(err)

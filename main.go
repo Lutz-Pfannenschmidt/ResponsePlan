@@ -1,12 +1,9 @@
 package main
 
 import (
-	"context"
 	"embed"
-	"encoding/json"
 	"fmt"
 	"io/fs"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -16,7 +13,6 @@ import (
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/httpstring"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/logging"
 	ws "github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/websocket"
-	"github.com/Ullaakut/nmap/v3"
 	"github.com/akamensky/argparse"
 	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/httprouter"
@@ -35,21 +31,27 @@ func main() {
 
 	parser := argparse.NewParser("ResponsePlan", "A simple web application for incidence response.")
 
-	// keepData := parser.Flag("k", "keep", &argparse.Options{Help: "Save the data in a database."})
-	port := parser.Int("p", "port", &argparse.Options{Help: "The port to run Responseplan on.", Default: 1337})
-	debugFlag := parser.Flag("d", "debug", &argparse.Options{Help: "For additional logging."})
+	keepData := parser.Flag("k", "keep", &argparse.Options{Help: "Save the data in a database"})
+	port := parser.Int("p", "port", &argparse.Options{Help: "The port to run Responseplan on", Default: 1337})
+	debugFlag := parser.Flag("d", "debug", &argparse.Options{Help: "For additional logging"})
 
 	database := db.NewDatabase()
+	if *keepData {
+		database.LoadFromFile("test.json")
+	}
 
 	err := parser.Parse(os.Args)
 	if err != nil {
 		fmt.Print(parser.Usage(err))
+		os.Exit(1)
 	}
-	fmt.Println(*port)
-
 	logger := logging.NewLogger(*debugFlag)
 
 	logger.Debug("Debugging enabled.")
+	if *debugFlag && *port != 1337 {
+		logger.Debug("Debugging overrides provided port to default (1337).")
+		*port = 1337
+	}
 
 	assetsFs, err := fs.Sub(static, "web/dist/assets")
 	if err != nil {
@@ -63,49 +65,23 @@ func main() {
 		conn.WriteMessage(websocket.TextMessage, []byte("pong"))
 	})
 
-	wsManager.On("scan", func(conn *websocket.Conn, message []byte) {
-		scanner, err := nmap.NewScanner(
-			context.Background(),
-			nmap.WithTargets("scanme.nmap.org"),
-			nmap.WithPorts("1-1000"),
-			nmap.WithServiceInfo(),
-			nmap.WithVerbosity(3),
-			nmap.WithOSDetection(),
-			nmap.WithFilterHost(func(h nmap.Host) bool {
-				return h.Status.State != "down"
-			}),
-		)
-		if err != nil {
-			log.Fatalf("unable to create nmap scanner: %v", err)
-		}
-
-		progress := make(chan float32, 1)
-
-		go func() {
-			for p := range progress {
-				fmt.Printf("Progress: %v %%\n", p)
-			}
-		}()
-
-		result, warnings, err := scanner.Progress(progress).Run()
-		if len(*warnings) > 0 {
-			log.Printf("run finished with warnings: %s\n", *warnings)
-		}
-		if err != nil {
-			log.Fatalf("unable to run nmap scan: %v", err)
-		}
-		str, err := json.Marshal(result)
-		if err != nil {
-			log.Fatalf("unable to marshal result: %v", err)
-		}
-
-		conn.WriteMessage(websocket.TextMessage, []byte(str))
-
-		fmt.Printf("Nmap done: %d hosts up scanned in %.2f seconds\n", len(result.Hosts), result.Stats.Finished.Elapsed)
-	})
-
 	router := httprouter.New()
 	apiManager := api.NewApiManager(database, logger)
+
+	if *debugFlag {
+		router.HandleOPTIONS = true
+		router.GlobalOPTIONS = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.Header.Get("Access-Control-Request-Method") != "" {
+				// Set CORS headers
+				header := w.Header()
+				header.Set("Access-Control-Allow-Origin", "*")
+				header.Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+			}
+
+			// Adjust status code to 204
+			w.WriteHeader(http.StatusNoContent)
+		})
+	}
 
 	// WebSocket endpoint handler
 	router.GET("/ws", wsManager.HandleWebSocket)

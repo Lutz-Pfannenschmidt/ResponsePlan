@@ -4,6 +4,20 @@ import { onMounted } from 'vue';
 import CrosshairIcon from '@/components/icons/CrosshairIcon.vue'
 import CloseIcon from '@/components/icons/CloseIcon.vue'
 import NetworkIcon from '@/components/icons/NetworkIcon.vue'
+import { dev } from '@/socket';
+
+async function requestScan() {
+  let resp: Response;
+
+  if (dev) {
+    resp = await fetch("http://127.0.0.1:1337/api/scan")
+  } else {
+    resp = await fetch("/api/scan")
+  }
+
+  let id = await resp.text()
+  alert(id)
+}
 
 onMounted(() => {
   start()
@@ -32,7 +46,7 @@ onMounted(() => {
         </button>
       </div>
       <div class="tooltip tooltip-right tooltip-info" data-tip="new network scan">
-        <button class="btn btn-square btn-accent btn-outline mr-2" @click="resetPositionAndScale()">
+        <button class="btn btn-square btn-accent btn-outline mr-2" @click="requestScan()">
           <NetworkIcon/>
         </button>
       </div>

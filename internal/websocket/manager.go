@@ -53,13 +53,6 @@ func (manager *ConnectionManager) SendMessage(conn *websocket.Conn, message []by
 
 func (manager *ConnectionManager) HandleWebSocket(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
-	// Check the request method for CORS preflight
-	if r.Method == http.MethodOptions {
-		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
 	// Upgrade HTTP connection to WebSocket
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
