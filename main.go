@@ -11,9 +11,9 @@ import (
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/api"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/db"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/httpstring"
-	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/logging"
 	ws "github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/websocket"
 	"github.com/akamensky/argparse"
+	log "github.com/amoghe/distillog"
 	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/httprouter"
 )
@@ -45,11 +45,10 @@ func main() {
 		fmt.Print(parser.Usage(err))
 		os.Exit(1)
 	}
-	logger := logging.NewLogger(*debugFlag)
 
-	logger.Debug("Debugging enabled.")
+	log.Debugln("Debugging enabled.")
 	if *debugFlag && *port != 1337 {
-		logger.Debug("Debugging overrides provided port to default (1337).")
+		log.Debugln("Debugging overrides provided port to default (1337).")
 		*port = 1337
 	}
 
@@ -66,7 +65,7 @@ func main() {
 	})
 
 	router := httprouter.New()
-	apiManager := api.NewApiManager(database, logger)
+	apiManager := api.NewApiManager(database, *debugFlag)
 
 	if *debugFlag {
 		router.HandleOPTIONS = true
@@ -98,6 +97,6 @@ func main() {
 	router.NotFound = httpstring.StringHandlerFunc(index)
 
 	// Start the HTTP server
-	logger.Log("Serving at http://localhost:" + strconv.Itoa(*port) + " ...")
+	fmt.Println("Serving at http://localhost:" + strconv.Itoa(*port) + " ...")
 	http.ListenAndServe(":"+strconv.Itoa(*port), router)
 }

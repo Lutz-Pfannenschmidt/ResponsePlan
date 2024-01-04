@@ -3,34 +3,33 @@ package api
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/db"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/db/models"
-	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/logging"
 	"github.com/Ullaakut/nmap/v3"
+	log "github.com/amoghe/distillog"
 	"github.com/google/uuid"
 	"github.com/julienschmidt/httprouter"
 )
 
 type ApiManager struct {
 	Database *db.Database
-	Logger   *logging.Logger
+	debug    bool
 }
 
-func NewApiManager(database *db.Database, logger *logging.Logger) *ApiManager {
+func NewApiManager(database *db.Database, debug bool) *ApiManager {
 	return &ApiManager{
 		Database: database,
-		Logger:   logger,
+		debug:    debug,
 	}
 }
 
 func (a *ApiManager) HandleApiRequest(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
-	if a.Logger.DebugFlag {
+	if a.debug {
 		header := w.Header()
 		header.Set("Access-Control-Allow-Origin", "*")
 		header.Set("Access-Control-Allow-Methods", "GET, OPTIONS, POST, PUT, DELETE")
@@ -62,7 +61,8 @@ func (a *ApiManager) HandleApiRequest(w http.ResponseWriter, r *http.Request, p 
 				}),
 			)
 			if err != nil {
-				log.Fatalf("unable to create nmap scanner: %v", err)
+				log.Errorln("unable to create nmap scanner: %v", err)
+				return
 			}
 
 			// progress := make(chan float32, 1)
@@ -76,10 +76,11 @@ func (a *ApiManager) HandleApiRequest(w http.ResponseWriter, r *http.Request, p 
 			// result, warnings, err := scanner.Progress(progress).Run()
 			result, warnings, err := scanner.Run()
 			if len(*warnings) > 0 {
-				log.Printf("run finished with warnings: %s\n", *warnings)
+				log.Infoln("run finished with warnings: %s\n", *warnings)
 			}
 			if err != nil {
-				log.Fatalf("unable to run nmap scan: %v", err)
+				log.Errorln("unable to run nmap scan: %v", err)
+				return
 			}
 
 			fmt.Printf("Nmap done: %d hosts up scanned in %.2f seconds\n", len(result.Hosts), result.Stats.Finished.Elapsed)
@@ -101,7 +102,7 @@ func (a *ApiManager) HandleApiRequest(w http.ResponseWriter, r *http.Request, p 
 				panic(err)
 			}
 
-			a.Logger.Logf(id, "Scan finished")
+			log.Infoln(id, "Scan finished")
 		}()
 	}
 }
