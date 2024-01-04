@@ -31,7 +31,6 @@ func NewApiManager(database *db.Database, logger *logging.Logger) *ApiManager {
 func (a *ApiManager) HandleApiRequest(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 	if a.Logger.DebugFlag {
-		a.Logger.Logf("API", "Handling request: %s", r.URL.Path)
 		header := w.Header()
 		header.Set("Access-Control-Allow-Origin", "*")
 		header.Set("Access-Control-Allow-Methods", "GET, OPTIONS, POST, PUT, DELETE")
