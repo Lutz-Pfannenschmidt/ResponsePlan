@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -10,7 +9,7 @@ import (
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/db"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/db/models"
 	"github.com/Ullaakut/nmap/v3"
-	log "github.com/amoghe/distillog"
+	"github.com/amoghe/distillog"
 	"github.com/google/uuid"
 	"github.com/julienschmidt/httprouter"
 )
@@ -61,29 +60,20 @@ func (a *ApiManager) HandleApiRequest(w http.ResponseWriter, r *http.Request, p 
 				}),
 			)
 			if err != nil {
-				log.Errorln("unable to create nmap scanner: %v", err)
+				distillog.Errorln("unable to create nmap scanner: %v", err)
 				return
 			}
 
-			// progress := make(chan float32, 1)
-
-			// go func() {
-			// 	for p := range progress {
-			// 		fmt.Printf("Progress: %v %%\n", p)
-			// 	}
-			// }()
-
-			// result, warnings, err := scanner.Progress(progress).Run()
 			result, warnings, err := scanner.Run()
 			if len(*warnings) > 0 {
-				log.Infoln("run finished with warnings: %s\n", *warnings)
+				distillog.Infoln("run finished with warnings: %s\n", *warnings)
 			}
 			if err != nil {
-				log.Errorln("unable to run nmap scan: %v", err)
+				distillog.Errorln("unable to run nmap scan: %v", err)
 				return
 			}
 
-			fmt.Printf("Nmap done: %d hosts up scanned in %.2f seconds\n", len(result.Hosts), result.Stats.Finished.Elapsed)
+			distillog.Debugln("Nmap done: %d hosts up scanned in %.2f seconds\n", len(result.Hosts), result.Stats.Finished.Elapsed)
 
 			if entry, ok := a.Database.Data[id]; ok {
 				entry.EndTime = time.Now().Unix()
@@ -102,7 +92,7 @@ func (a *ApiManager) HandleApiRequest(w http.ResponseWriter, r *http.Request, p 
 				panic(err)
 			}
 
-			log.Infoln(id, "Scan finished")
+			distillog.Infoln(id, "Scan finished")
 		}()
 	}
 }

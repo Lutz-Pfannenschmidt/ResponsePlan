@@ -2,10 +2,10 @@ package websocket
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"sync"
 
+	"github.com/amoghe/distillog"
 	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/httprouter"
 )
@@ -56,7 +56,7 @@ func (manager *ConnectionManager) HandleWebSocket(w http.ResponseWriter, r *http
 	// Upgrade HTTP connection to WebSocket
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Println("Error upgrading to WebSocket:", err)
+		distillog.Errorln("Error upgrading to WebSocket:", err)
 		return
 	}
 	defer conn.Close()
@@ -69,7 +69,7 @@ func (manager *ConnectionManager) HandleWebSocket(w http.ResponseWriter, r *http
 		messageType, message, err := conn.ReadMessage()
 		if err != nil {
 			// Handle errors or connection closure
-			log.Println("WebSocket connection closed:", err)
+			distillog.Debugln("WebSocket connection closed:", err)
 			break
 		}
 
