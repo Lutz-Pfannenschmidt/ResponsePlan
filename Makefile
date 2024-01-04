@@ -8,4 +8,4 @@ dev: build
 	sudo ./dist/ResponsePlan -d
 
 clean:
-	rm -f main
+	rm -rf dist
