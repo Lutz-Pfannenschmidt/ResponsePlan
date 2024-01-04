@@ -32,10 +32,10 @@ func (a *ApiManager) HandleApiRequest(w http.ResponseWriter, r *http.Request, p 
 
 	if a.Logger.DebugFlag {
 		a.Logger.Logf("API", "Handling request: %s", r.URL.Path)
+		header := w.Header()
+		header.Set("Access-Control-Allow-Origin", "*")
+		header.Set("Access-Control-Allow-Methods", "GET, OPTIONS, POST, PUT, DELETE")
 	}
-	header := w.Header()
-	header.Set("Access-Control-Allow-Origin", "*")
-	header.Set("Access-Control-Allow-Methods", "GET, OPTIONS, POST, PUT, DELETE")
 
 	if strings.HasPrefix(r.URL.Path, "/api/scan") {
 		id := uuid.New().String()
