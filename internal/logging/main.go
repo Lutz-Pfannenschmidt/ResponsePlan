@@ -9,13 +9,13 @@ import (
 
 // Logger is a struct that represents a logger.
 type Logger struct {
-	debug bool
+	DebugFlag bool
 }
 
 // NewLogger creates a new Logger instance.
 func NewLogger(debug bool) *Logger {
 	return &Logger{
-		debug: debug,
+		DebugFlag: debug,
 	}
 }
 
@@ -26,7 +26,7 @@ func (l *Logger) Log(message string) {
 
 // Debug logs a message to the console if debug is enabled.
 func (l *Logger) Debug(message string) {
-	if l.debug {
+	if l.DebugFlag {
 		fmt.Println(color.MagentaString(message))
 	}
 }
@@ -70,7 +70,7 @@ func (l *Logger) Logf(format string, a ...interface{}) {
 
 // Debugf logs a formatted message to the console if debug is enabled.
 func (l *Logger) Debugf(format string, a ...interface{}) {
-	if l.debug {
+	if l.DebugFlag {
 		fmt.Printf(color.MagentaString(format), a...)
 	}
 }
