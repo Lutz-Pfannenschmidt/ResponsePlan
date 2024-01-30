@@ -26,6 +26,9 @@ jobs:
                   for os in ${{ matrix.go-os }}; do
                       for arch in ${{ matrix.go-arch }}; do
                           output_name="ResponsePlan_${{ github.event.release.tag_name }}_${os}_${arch}"
+                          if [ "${os}" == "windows" ]; then
+                              output_name="${output_name}.exe"
+                          fi
                           GOOS=${os} GOARCH=${arch} go build -o "dist/${output_name}" main.go
                       done
                   done
