@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <script src="/cdn/htmx.min.js" defer></script>
+    <script src="/cdn/htmx-ws.min.js" defer></script>
+    <script src="/cdn/tailwind.min.js" defer></script>
+    <script src="/cdn/alpine.min.js" defer></script>
+    <link rel="stylesheet" href="/cdn/daisyui.css" />
+
+    {{ if .Title }}
+    <title>{{ .Title }} | ResponsePlan</title>
+    {{ else }}
+    <title>ResponsePlan</title>
+    {{ end }}
+</head>
+
+<body class="min-h-screen h-screen w-screen flex flex-col overflow-x-hidden">
+    {{ component "components/navbar.html" }}
+    <div class="flex-grow" id="content">
+        {{ if or .Error .ErrorMessage }}
+        {{ component "components/error.html" (string .) }}
+        {{ else }}
+        {{ if .Component }}
+        {{ component .Component }}
+        {{ end}}
+        {{ end }}
+    </div>
+    {{ component "components/runningScans.html" }}
+</body>
+</html>

@@ -1,0 +1,6 @@
+{{ if .Next }}
+{{ .}}
+{{ component "components/test.html" `{"Next": false}` }}
+{{ else }}
+<div class="w-[20px] h-screen bg-success">d</div>
+{{ end }}

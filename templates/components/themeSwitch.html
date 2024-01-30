@@ -1,0 +1,38 @@
+<label class="swap swap-rotate px-4">
+  <input type="checkbox" id="theme-switch" />
+
+  <div class="swap-on w-10 h-10">
+    <div>{{ component "icons/sun.svg" }}</div>
+  </div>
+  <div class="swap-off w-10 h-10">
+      <div>{{ component "icons/moon.svg" }}</div>
+  </div>
+</label>
+
+{{/* Theme Switcher */}}
+<script>
+  const themes = ["business", "corporate"];
+  const currentTheme = localStorage.getItem("theme") || themes[0];
+  document.documentElement.setAttribute("data-theme", currentTheme);
+
+  function setIcon() {
+      document.getElementById("theme-switch").checked =
+          localStorage.getItem("theme") === themes[0];
+  }
+
+  function toggleTheme() {
+      const currentTheme = localStorage.getItem("theme");
+      const nextTheme =
+          themes[(themes.indexOf(currentTheme) + 1) % themes.length];
+      document.documentElement.setAttribute("data-theme", nextTheme);
+      localStorage.setItem("theme", nextTheme);
+      setIcon();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+      document
+          .getElementById("theme-switch")
+          .addEventListener("click", toggleTheme);
+      setIcon();
+  });
+</script>

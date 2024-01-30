@@ -1,0 +1,9 @@
+<button class="btn" onclick="newScanModal.showModal()">open modal</button>
+<dialog id="newScanModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+        {{ component "components/modals/newScan.html" }}
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>

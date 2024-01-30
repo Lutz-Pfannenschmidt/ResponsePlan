@@ -1,0 +1,23 @@
+<div class="hero min-h-full">
+	<div class="hero-content text-center">
+		<div class="max-w-6xl">
+			<h1 class="text-[12em] text-accent" id="random-emoji">SAD</h1>
+			<h1 class="text-5xl font-bold">
+				{{ if .Error }}
+				Error {{ .Error }}
+				{{ else }}
+				An Error Occured
+				{{ end }}
+			</h1>
+			<p class="py-6">{{ .ErrorMessage }}</p>
+		</div>
+	</div>
+</div>
+
+
+<script>
+	const sad_emojis = ["(◡︵◡)", "(ㅠ﹏ㅠ)", "(⌣́_⌣̀)", "(╥_╥)", "ʕっ•ᴥ•ʔっ", "ʕ•ᴥ•ʔ", "⊙︿⊙", "(︶︹︺)", "ε(´סּ︵סּ`)з"];
+
+	const sad_emoji = sad_emojis[Math.floor(Math.random() * sad_emojis.length)];
+	document.getElementById("random-emoji").textContent = sad_emoji;
+</script>
