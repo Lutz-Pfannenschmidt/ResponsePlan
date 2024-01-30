@@ -18,12 +18,12 @@ jobs:
 
             - name: Build
               run:
-                  GOOS=linux GOARCH=amd64 go build main.go -o dist/ResponsePlan_{{ release.tag_name }}_linux_amd64 &&
-                  GOOS=windows GOARCH=amd64 go build main.go -o dist/ResponsePlan_{{ release.tag_name }}_windows_amd64.exe &&
-                  GOOS=darwin GOARCH=amd64 go build main.go -o dist/ResponsePlan_{{ release.tag_name }}_darwin_amd64 &&
-                  GOOS=linux GOARCH=arm64 go build main.go -o dist/ResponsePlan_{{ release.tag_name }}_linux_arm64 &&
-                  GOOS=windows GOARCH=arm64 go build main.go -o dist/ResponsePlan_{{ release.tag_name }}_windows_arm64.exe &&
-                  GOOS=darwin GOARCH=arm64 go build main.go -o dist/ResponsePlan_{{ release.tag_name }}_darwin_arm64
+                  GOOS=linux GOARCH=amd64 go build -o dist/ResponsePlan_{{ release.tag_name }}_linux_amd64 main.go &&
+                  GOOS=windows GOARCH=amd64 go build -o dist/ResponsePlan_{{ release.tag_name }}_windows_amd64.exe main.go &&
+                  GOOS=darwin GOARCH=amd64 go build -o dist/ResponsePlan_{{ release.tag_name }}_darwin_amd64 main.go &&
+                  GOOS=linux GOARCH=arm64 go build -o dist/ResponsePlan_{{ release.tag_name }}_linux_arm64 main.go &&
+                  GOOS=windows GOARCH=arm64 go build -o dist/ResponsePlan_{{ release.tag_name }}_windows_arm64.exe main.go &&
+                  GOOS=darwin GOARCH=arm64 go build -o dist/ResponsePlan_{{ release.tag_name }}_darwin_arm64 main.go
 
             - name: Release
               uses: softprops/action-gh-release@v1
