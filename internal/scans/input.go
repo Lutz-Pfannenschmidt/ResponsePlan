@@ -22,5 +22,5 @@ func TransformPortRange(input string) string {
 		}
 	}
 	yagll.Debugf("Transformed port range '%s' to '%s'", input, strings.Join(ranges, ", "))
-	return strings.Join(ranges, ", ")
+	return strings.Join(ranges, ",")
 }
