@@ -9,6 +9,7 @@ import (
 	"io/fs"
 	"net/http"
 	"os"
+	"os/signal"
 	"strconv"
 	"strings"
 
@@ -224,7 +225,7 @@ func ScansHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func main() {
 	parser := argparse.NewParser("ResponsePlan", "A simple web application for incidence response.")
 
-	// keepData := parser.Flag("k", "keep", &argparse.Options{Help: "Save the data in a database"})
+	keepData := parser.Flag("k", "keep", &argparse.Options{Help: "Save the data in a database"})
 	port := parser.Int("p", "port", &argparse.Options{Help: "The port to run Responseplan on", Default: 1337})
 	dev := parser.Flag("d", "dev", &argparse.Options{Help: "Enable development mode (additional logging)"})
 
@@ -239,6 +240,12 @@ func main() {
 		yagll.Debugln("Debug mode enabled")
 	}
 	yagll.Toggle(yagll.DEBUG, devMode)
+
+	if *keepData {
+		scanManager.LoadFromFile("data.responseplan")
+		yagll.Debugf("Loaded %d scans from file", len(scanManager.Scans))
+		yagll.Infoln("Data will be saved to data.responseplan")
+	}
 
 	router := httprouter.New()
 
@@ -271,11 +278,26 @@ func main() {
 	}
 	router.MethodNotAllowed = http.HandlerFunc(getErrorHandler(405, "Method not allowed"))
 
+	yagll.Debugln("Setting up SIGINT handler")
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		for sig := range c {
+			yagll.Debugln("Received signal: " + sig.String())
+			if *keepData {
+				scanManager.SaveToFile("data.responseplan")
+				yagll.Debugf("Saved %d scans to file", len(scanManager.Scans))
+				yagll.Infoln("Done saving data to data.responseplan")
+			}
+			os.Exit(0)
+		}
+	}()
+
 	yagll.Infof("Starting server on port %d", *port)
 	yagll.Infoln("Server running on http://localhost:" + strconv.Itoa(*port))
 	err = http.ListenAndServe(":"+strconv.Itoa(*port), router)
 	if err != nil {
 		yagll.Errorf("Error starting server: %s", err.Error())
 	}
-	yagll.Infoln("Bye bye!")
+	yagll.Infoln("Shutting down")
 }

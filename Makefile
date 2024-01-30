@@ -14,7 +14,7 @@ dev:
 sudev:
 	make clean
 	make build
-	sudo ./dist/ResponsePlan --dev
+	sudo ./dist/ResponsePlan -dk
 
 run:
 	make build
