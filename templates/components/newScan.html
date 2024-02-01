@@ -1,4 +1,6 @@
-<button class="btn" onclick="newScanModal.showModal()">open modal</button>
+<button class="{{ .Classes }}" onclick="newScanModal.showModal()">
+    {{ component "icons/crosshair.svg" }}
+</button>
 <dialog id="newScanModal" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box">
         {{ component "components/modals/newScan.html" }}

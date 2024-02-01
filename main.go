@@ -15,6 +15,7 @@ import (
 
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/htmx"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/scans"
+	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/svg"
 	"github.com/Lutz-Pfannenschmidt/yagll"
 	"github.com/google/uuid"
 
@@ -78,6 +79,12 @@ func attachTemplateFunctions(t *template.Template) *template.Template {
 				return "Error passing data"
 			}
 			return string(text)
+		},
+		"svg": func() template.HTML {
+			for _, scan := range scanManager.Scans {
+				return template.HTML(svg.RunToSvg(*scan.Result))
+			}
+			return template.HTML("No scans")
 		},
 	})
 }
@@ -194,7 +201,6 @@ func StartScan(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	w.Write([]byte(id.String()))
 	yagll.Debugf("Scan started: %s", id.String())
-
 }
 
 func ScansHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -255,13 +261,13 @@ func main() {
 	router.ServeFiles("/cdn/*filepath", http.FS(cdn))
 
 	// Routes
-	router.GET("/", Index)
+	router.GET("/", IndexWithComponent("Graph", "components/graph.html"))
 	router.GET("/graph", IndexWithComponent("Graph", "components/graph.html"))
 	router.GET("/analytics", IndexWithComponent("Analytics", "components/analytics.html"))
 	router.GET("/history", IndexWithComponent("History", "components/history.html"))
 
 	// HTMX component routes
-	router.GET("/x/", Component("Home", "components/newScan.html"))
+	router.GET("/x/", Component("Graph", "components/graph.html"))
 	router.GET("/x/graph", Component("Graph", "components/graph.html"))
 	router.GET("/x/analytics", Component("Analytics", "components/analytics.html"))
 	router.GET("/x/history", Component("History", "components/history.html"))

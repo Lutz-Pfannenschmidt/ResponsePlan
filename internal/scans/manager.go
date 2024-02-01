@@ -49,8 +49,9 @@ func (sm *ScanManager) StartScan(config *ScanConfig, callback func(uuid.UUID)) u
 		scanner, err := nmap.NewScanner(
 			context.Background(),
 
-			nmap.WithTargets("scanme.nmap.org"),
-			nmap.WithPorts("100"),
+			nmap.WithTargets("192.168.188.96", "192.168.188.149", "192.168.188.152", "192.168.188.1"),
+			nmap.WithPorts(config.Ports),
+			nmap.WithOSDetection(),
 			nmap.WithVerbosity(3),
 			nmap.WithServiceInfo(),
 			nmap.WithFilterHost(func(h nmap.Host) bool {
