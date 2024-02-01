@@ -229,6 +229,8 @@ func main() {
 	port := parser.Int("p", "port", &argparse.Options{Help: "The port to run Responseplan on", Default: 1337})
 	devFlag := parser.Flag("d", "dev", &argparse.Options{Help: "Enable development mode (additional logging, expose to lan)"})
 	expose := parser.Flag("e", "expose", &argparse.Options{Help: "Expose ResponsePlan to lan"})
+	outfile := parser.String("o", "out", &argparse.Options{Help: "The file to save data to", Default: "data.responseplan"})
+	infile := parser.String("i", "in", &argparse.Options{Help: "The file to load data from", Default: "data.responseplan"})
 
 	err := parser.Parse(os.Args)
 	if err != nil {
@@ -243,7 +245,7 @@ func main() {
 	yagll.Toggle(yagll.DEBUG, devMode)
 
 	if !*memory {
-		scanManager.LoadFromFile("data.responseplan")
+		scanManager.LoadFromFile(*infile)
 		yagll.Debugf("Loaded %d scans from file", len(scanManager.Scans))
 	}
 
@@ -285,7 +287,7 @@ func main() {
 		for sig := range c {
 			yagll.Debugln("Received signal: " + sig.String())
 			if !*memory {
-				scanManager.SaveToFile("data.responseplan")
+				scanManager.SaveToFile(*outfile)
 				yagll.Debugf("Saved %d scans to file", len(scanManager.Scans))
 				yagll.Infoln("Done saving data to data.responseplan")
 			}
