@@ -227,7 +227,7 @@ func main() {
 
 	memory := parser.Flag("m", "memory", &argparse.Options{Help: "Will disable saving data to file"})
 	port := parser.Int("p", "port", &argparse.Options{Help: "The port to run Responseplan on", Default: 1337})
-	dev := parser.Flag("d", "dev", &argparse.Options{Help: "Enable development mode (additional logging, expose to lan)"})
+	devFlag := parser.Flag("d", "dev", &argparse.Options{Help: "Enable development mode (additional logging, expose to lan)"})
 	open := parser.Flag("o", "open", &argparse.Options{Help: "Expose ResponsePlan to lan"})
 
 	err := parser.Parse(os.Args)
@@ -236,9 +236,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	if os.Getenv("DEV_MODE") == "true" || *dev {
+	if *devFlag {
 		devMode = true
-		dev = &devMode
 		yagll.Debugln("Debug mode enabled")
 	}
 	yagll.Toggle(yagll.DEBUG, devMode)

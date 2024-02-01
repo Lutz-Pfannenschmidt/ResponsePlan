@@ -4,17 +4,17 @@ clean:
 
 build:
 	make clean
-	export DEV_MODE=false && go build -o dist/ResponsePlan main.go
+	go build -o dist/ResponsePlan main.go
 
 dev:
 	make clean
 	clear
-	export DEV_MODE=true && gow -c -e=go,html,svg run .
+	gow -c -e=go,html,svg run . -d
 
 sudev:
-	make clean
 	make build
-	sudo ./dist/ResponsePlan -dk
+	clear
+	sudo ./dist/ResponsePlan -d
 
 run:
 	make build
