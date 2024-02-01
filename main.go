@@ -228,7 +228,7 @@ func main() {
 	memory := parser.Flag("m", "memory", &argparse.Options{Help: "Will disable saving data to file"})
 	port := parser.Int("p", "port", &argparse.Options{Help: "The port to run Responseplan on", Default: 1337})
 	devFlag := parser.Flag("d", "dev", &argparse.Options{Help: "Enable development mode (additional logging, expose to lan)"})
-	open := parser.Flag("o", "open", &argparse.Options{Help: "Expose ResponsePlan to lan"})
+	expose := parser.Flag("e", "expose", &argparse.Options{Help: "Expose ResponsePlan to lan"})
 
 	err := parser.Parse(os.Args)
 	if err != nil {
@@ -294,7 +294,7 @@ func main() {
 	}()
 
 	url := "127.0.0.1:" + strconv.Itoa(*port)
-	if *open || devMode {
+	if *expose || devMode {
 		url = "0.0.0.0:" + strconv.Itoa(*port)
 	}
 	yagll.Infof("Starting server on port %d", *port)
