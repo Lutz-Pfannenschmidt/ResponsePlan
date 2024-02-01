@@ -285,6 +285,7 @@ func main() {
 	signal.Notify(c, os.Interrupt)
 	go func() {
 		for sig := range c {
+			fmt.Print("\n\033[F\033[K")
 			yagll.Debugln("Received signal: " + sig.String())
 			if !*memory {
 				scanManager.SaveToFile(*outfile)
