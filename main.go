@@ -227,8 +227,8 @@ func main() {
 
 	memory := parser.Flag("m", "memory", &argparse.Options{Help: "Will disable saving data to file"})
 	port := parser.Int("p", "port", &argparse.Options{Help: "The port to run Responseplan on", Default: 1337})
-	dev := parser.Flag("d", "dev", &argparse.Options{Help: "Enable development mode (additional logging)"})
-	address := parser.String("a", "address", &argparse.Options{Help: "The address to run Responseplan on (use 0.0.0.0 for public)", Default: "127.0.0.1"})
+	dev := parser.Flag("d", "dev", &argparse.Options{Help: "Enable development mode (additional logging, expose to lan)"})
+	open := parser.Flag("o", "open", &argparse.Options{Help: "Expose ResponsePlan to lan"})
 
 	err := parser.Parse(os.Args)
 	if err != nil {
@@ -293,7 +293,10 @@ func main() {
 		}
 	}()
 
-	url := *address + ":" + strconv.Itoa(*port)
+	url := "127.0.0.1:" + strconv.Itoa(*port)
+	if *open || devMode {
+		url = "0.0.0.0:" + strconv.Itoa(*port)
+	}
 	yagll.Infof("Starting server on port %d", *port)
 	yagll.Infoln(yagll.Red + "Server running on http://" + url + yagll.Reset)
 	err = http.ListenAndServe(url, router)
