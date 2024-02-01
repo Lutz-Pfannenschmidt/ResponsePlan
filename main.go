@@ -238,6 +238,7 @@ func main() {
 
 	if os.Getenv("DEV_MODE") == "true" || *dev {
 		devMode = true
+		dev = &devMode
 		yagll.Debugln("Debug mode enabled")
 	}
 	yagll.Toggle(yagll.DEBUG, devMode)
