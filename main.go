@@ -225,9 +225,10 @@ func ScansHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func main() {
 	parser := argparse.NewParser("ResponsePlan", "A simple web application for incidence response.")
 
-	keepData := parser.Flag("k", "keep", &argparse.Options{Help: "Save the data in a database"})
+	memory := parser.Flag("m", "memory", &argparse.Options{Help: "Will disable saving data to file"})
 	port := parser.Int("p", "port", &argparse.Options{Help: "The port to run Responseplan on", Default: 1337})
 	dev := parser.Flag("d", "dev", &argparse.Options{Help: "Enable development mode (additional logging)"})
+	address := parser.String("a", "address", &argparse.Options{Help: "The address to run Responseplan on (use 0.0.0.0 for public)", Default: "127.0.0.1"})
 
 	err := parser.Parse(os.Args)
 	if err != nil {
@@ -241,10 +242,9 @@ func main() {
 	}
 	yagll.Toggle(yagll.DEBUG, devMode)
 
-	if *keepData {
+	if !*memory {
 		scanManager.LoadFromFile("data.responseplan")
 		yagll.Debugf("Loaded %d scans from file", len(scanManager.Scans))
-		yagll.Infoln("Data will be saved to data.responseplan")
 	}
 
 	router := httprouter.New()
@@ -284,7 +284,7 @@ func main() {
 	go func() {
 		for sig := range c {
 			yagll.Debugln("Received signal: " + sig.String())
-			if *keepData {
+			if !*memory {
 				scanManager.SaveToFile("data.responseplan")
 				yagll.Debugf("Saved %d scans to file", len(scanManager.Scans))
 				yagll.Infoln("Done saving data to data.responseplan")
@@ -293,9 +293,10 @@ func main() {
 		}
 	}()
 
+	url := *address + ":" + strconv.Itoa(*port)
 	yagll.Infof("Starting server on port %d", *port)
-	yagll.Infoln("Server running on http://localhost:" + strconv.Itoa(*port))
-	err = http.ListenAndServe(":"+strconv.Itoa(*port), router)
+	yagll.Infoln(yagll.Red + "Server running on http://" + url + yagll.Reset)
+	err = http.ListenAndServe(url, router)
 	if err != nil {
 		yagll.Errorf("Error starting server: %s", err.Error())
 	}
