@@ -3,6 +3,7 @@ package svg
 import (
 	"bytes"
 	"html/template"
+	"regexp"
 
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/scans"
 	"github.com/Ullaakut/nmap/v3"
@@ -61,7 +62,8 @@ func RunToSvg(run nmap.Run) string {
 		panic(err)
 	}
 
-	return out.String()
+	re := regexp.MustCompile(`\s+`)
+	return re.ReplaceAllLiteralString(out.String(), " ")
 }
 
 func add(in ...int) int {
