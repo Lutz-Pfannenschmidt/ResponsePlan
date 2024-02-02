@@ -6,7 +6,7 @@ import (
 	"regexp"
 
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/scans"
-	"github.com/Ullaakut/nmap/v3"
+	"github.com/google/uuid"
 )
 
 var svgTemplate = `
@@ -40,7 +40,12 @@ var svgTemplate = `
 </svg>
 `
 
-func RunToSvg(run nmap.Run) string {
+func RunToSvg(sm *scans.ScanManager, id uuid.UUID) string {
+
+	if sm.Scans[id].Svg != "" {
+		return sm.Scans[id].Svg
+	}
+
 	tpl, err := template.New("svg").Funcs(template.FuncMap{
 		"add":           add,
 		"inc":           increment,
@@ -55,15 +60,16 @@ func RunToSvg(run nmap.Run) string {
 
 	out := bytes.NewBuffer([]byte{})
 	err = tpl.Execute(out, map[string]any{
-		"Run":    run,
-		"Amount": len(run.Hosts),
+		"Run":    sm.Scans[id].Result,
+		"Amount": len(sm.Scans[id].Result.Hosts),
 	})
 	if err != nil {
 		panic(err)
 	}
 
 	re := regexp.MustCompile(`\s+`)
-	return re.ReplaceAllLiteralString(out.String(), " ")
+	sm.Scans[id].Svg = re.ReplaceAllLiteralString(out.String(), " ")
+	return sm.Scans[id].Svg
 }
 
 func add(in ...int) int {

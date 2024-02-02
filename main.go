@@ -81,8 +81,8 @@ func attachTemplateFunctions(t *template.Template) *template.Template {
 			return string(text)
 		},
 		"svg": func() template.HTML {
-			for _, scan := range scanManager.Scans {
-				return template.HTML(svg.RunToSvg(*scan.Result))
+			for id, _ := range scanManager.Scans {
+				return template.HTML(svg.RunToSvg(scanManager, id))
 			}
 			return template.HTML("No scans")
 		},
