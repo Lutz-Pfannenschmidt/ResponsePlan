@@ -40,12 +40,27 @@ var svgTemplate = `
 </svg>
 `
 
+// RunToSvg generates an SVG representation of a scan,
+// if the scan has already been converted to SVG, the cached
+// version will be returned, else the scan will be converted
+// and the result will be cached.
 func RunToSvg(sm *scans.ScanManager, id uuid.UUID) string {
-
 	if sm.Scans[id].Svg != "" {
 		return sm.Scans[id].Svg
 	}
+	sm.Scans[id].Svg = runToSvg(sm, id)
+	return sm.Scans[id].Svg
+}
 
+// OverwriteRunToSvg generates an SVG representation of a scan,
+// the scan will be converted and the result will be cached.
+// This function will overwrite the cached SVG representation.
+func OverwriteRunToSvg(sm *scans.ScanManager, id uuid.UUID) string {
+	sm.Scans[id].Svg = runToSvg(sm, id)
+	return sm.Scans[id].Svg
+}
+
+func runToSvg(sm *scans.ScanManager, id uuid.UUID) string {
 	tpl, err := template.New("svg").Funcs(template.FuncMap{
 		"add":           add,
 		"inc":           increment,
@@ -68,8 +83,7 @@ func RunToSvg(sm *scans.ScanManager, id uuid.UUID) string {
 	}
 
 	re := regexp.MustCompile(`\s+`)
-	sm.Scans[id].Svg = re.ReplaceAllLiteralString(out.String(), " ")
-	return sm.Scans[id].Svg
+	return re.ReplaceAllLiteralString(out.String(), " ")
 }
 
 func add(in ...int) int {
