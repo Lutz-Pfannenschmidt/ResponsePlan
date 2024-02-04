@@ -1,0 +1,31 @@
+<dialog id="commandModal" class="modal modal-top">
+  <div class="modal-box ml-[25%] w-1/2">
+    {{ component "components/modals/commandPalette.html" }}
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
+<div x-init @click="commandModal.showModal()" class="mx-4 p-2 px-4 border-2 border-neutral flex flex-row">
+  {{ component "icons/search.svg" }}
+  <span class="mx-2 md:mr-4 lg:mr-8 text-base-content">
+    Search ...
+  </span>
+  <kbd class="kbd kbd-sm mr-2">ctrl</kbd>
+  <kbd class="kbd kbd-sm">P</kbd>
+</div>
+
+<script>
+  window.addEventListener('keydown', keydownHandler);
+
+  /**
+   * @param {KeyboardEvent} event
+  */
+  function keydownHandler(event) {
+    if (event.ctrlKey && event.code === 'KeyP') {
+      commandModal.showModal()
+      event.preventDefault();
+    };
+  }
+</script>

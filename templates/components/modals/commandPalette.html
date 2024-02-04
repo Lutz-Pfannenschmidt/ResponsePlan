@@ -1,0 +1,28 @@
+<div x-init="updateSuggestions()" x-data="{ search: '' }">
+  <input x-model="search" type="text" placeholder="Type here" class="input input-bordered w-full" />
+  <ul id="suggestions"></ul>
+</div>
+
+<script>
+  const possibilities = [
+    { name: 'python', description: 'Test1' },
+    { name: 'javascript', description: 'Test2' },
+    { name: 'go', description: 'Test3' },
+    { name: 'rust', description: 'Test4' },
+    { name: 'c', description: 'Test5'}
+  ]
+
+  const suggestions = document.getElementById('suggestions')
+
+  function updateSuggestions() {
+    suggestions.innerHTML = ''
+    for (const possibility of possibilities) {
+      suggestions.innerHTML += `<li x-show="'${possibility.name}'.includes(search)">
+        <div class="m-4">
+            <strong>${possibility.name}</strong>
+            <span>${possibility.description}</span>
+        </div>
+      </li>`
+    }
+  }
+</script>
