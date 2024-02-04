@@ -18,27 +18,34 @@
   function setupDeviceInfo() {
     const div = document.querySelector(".device-info");
     const nav = document.querySelector(".navbar");
+    const toaster = document.querySelector("#toaster").querySelector("div");
 
-    if (!div || !nav) return;
+    if (!div || !nav || !toaster) return;
 
     div.style.transition = "left .2s ease";
+    toaster.style.transition = "right .2s ease";
 
     div.style.height = window.innerHeight - nav.clientHeight + "px";
+    toaster.style.right = "0px";
     hideDeviceInfo();
   }
 
   function hideDeviceInfo() {
     const div = document.querySelector(".device-info");
+    const toaster = document.querySelector("#toaster").querySelector("div");
     if (!div) return;
 
     div.style.left = document.documentElement.clientWidth + "px";
+    toaster.style.right = "0px";
   }
 
   function showDeviceInfo() {
     const div = document.querySelector(".device-info");
+    const toaster = document.querySelector("#toaster").querySelector("div");
     if (!div) return;
 
     div.style.left =
       document.documentElement.clientWidth - div.clientWidth + "px";
+    toaster.style.right = div.clientWidth + "px";
   }
 </script>
