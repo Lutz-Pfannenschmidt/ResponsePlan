@@ -87,6 +87,11 @@
           <td class="text-center">{{ $p.Service.Name }}</td>
         </tr>
         {{ end }}
+        {{ if eq (len .Host.Ports) 0 }}
+        <tr>
+          <td class="text-center" colspan="3">No open ports found</td>
+        </tr>
+        {{ end }}
       </tbody>
     </table>
   </div>
