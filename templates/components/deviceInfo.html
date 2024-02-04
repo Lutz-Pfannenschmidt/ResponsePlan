@@ -1,85 +1,99 @@
-<div>
-  <h1 class="text-accent text-center text-2xl font-bold pt-4">{{ range $idx, $addr := .Host.Addresses }} {{ if (and $idx
-    (eq $addr.AddrType "ipv4"))}},{{ end }} {{ if eq $addr.AddrType "ipv4" }} {{ $addr.Addr }} {{ end }} {{ end }}</h1>
-  <h2 class="text-center text-xl font-semibold">
-    {{ if eq (len .Host.OS.Matches) 0 }}
-    Unknown OS
-    {{ else }}
-    {{ (index .Host.OS.Matches 0).Name }}
-    {{ end }}
-  </h2>
-  <hr class="hr my-4 w-2/3 mx-auto">
-  <table class="mx-auto w-2/3 table">
-    <tbody>
-      <tr>
-        <td class="text-right">MAC Address</td>
-        <td class="text-left">
-          {{ range $idx, $addr := .Host.Addresses }} {{ if (and $idx (eq $addr.AddrType "mac")) }} {{ $addr.Addr }} {{ end }} {{ end }}
-        </td>
-      </tr>
-      <tr>
-        <td class="text-right">Vendor</td>
-        <td class="text-left">
-          {{ range $idx, $addr := .Host.Addresses }} {{ if (and $idx (eq $addr.AddrType "mac")) }} {{ $addr.Vendor }} {{ end }} {{ end }}
-        </td>
-      </tr>
-      <tr>
-        <td class="text-right">OS</td>
-        <td class="text-left">
-          {{ if eq (len .Host.OS.Matches) 0 }}
-          Unknown OS
-          {{ else }}
-          {{ (index .Host.OS.Matches 0).Name }}
-          {{ end }}
-        </td>
-      </tr>
-      <tr>
-        <td class="text-right">Status</td>
-        <td class="text-left">
-          {{ if eq .Host.Status.State "up" }}
-          <span class="text-success">Up ({{ .Host.Status.Reason }}) </span>
-          {{ else }}
-          <span class="text-error">Down ({{ .Host.Status.Reason }})</span>
-          {{ end }}
-        </td>
-      </tr>
-      <tr>
-        <td class="text-right">Hostnames</td>
-        <td class="text-left">
-          {{ range $idx, $host := .Host.Hostnames }} {{ if $idx }}, {{ end }} {{ $host.Name }} {{ end }}
-        </td>
-      </tr>
-      <tr>
-        <td class="text-right">Uptime</td>
-        <td class="text-left">
-          {{ if and (eq .Host.Status.State "up") .Host.Uptime.Lastboot }}
-          {{ .Host.Uptime.Lastboot }} ({{ .Host.Uptime.Seconds }}s)
-          {{ else }}
-          Unknown
-          {{ end }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <hr class="hr my-4 w-2/3 mx-auto">
-
-  <table class="mx-auto w-2/3 table">
-    <thead>
-      <tr>
-        <th class="text-center font-semibold">Port</th>
-        <th class="text-center font-semibold">Protocol</th>
-        <th class="text-center font-semibold">Service</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{ range $i, $p := .Host.Ports }}
-      <tr>
-        <td class="text-center">{{ $p.ID }}</td>
-        <td class="text-center">{{ $p.Protocol }}</td>
-        <td class="text-center">{{ $p.Service.Name }}</td>
-      </tr>
+<div role="tablist" class="tabs tabs-bordered w-full">
+  <input type="radio" name="device-info-tabs" role="tab" class="tab" aria-label="Mockup" checked />
+  <div role="tabpanel" class="tab-content">
+    <p class="text-sm text-warning mt-2">for full data, click "Json"</p>
+    <h1 class="text-accent text-center text-2xl font-bold pt-4">{{ range $idx, $addr := .Host.Addresses }} {{ if (and
+      $idx
+      (eq $addr.AddrType "ipv4"))}},{{ end }} {{ if eq $addr.AddrType "ipv4" }} {{ $addr.Addr }} {{ end }} {{ end }}
+    </h1>
+    <h2 class="text-center text-xl font-semibold">
+      {{ if eq (len .Host.OS.Matches) 0 }}
+      Unknown OS
+      {{ else }}
+      {{ (index .Host.OS.Matches 0).Name }}
       {{ end }}
-    </tbody>
-  </table>
+    </h2>
+    <hr class="hr my-4 w-2/3 mx-auto">
+    <table class="mx-auto w-2/3 table">
+      <tbody>
+        <tr>
+          <td class="text-right">MAC Address</td>
+          <td class="text-left">
+            {{ range $idx, $addr := .Host.Addresses }} {{ if (and $idx (eq $addr.AddrType "mac")) }} {{ $addr.Addr }} {{
+            end }} {{ end }}
+          </td>
+        </tr>
+        <tr>
+          <td class="text-right">Vendor</td>
+          <td class="text-left">
+            {{ range $idx, $addr := .Host.Addresses }} {{ if (and $idx (eq $addr.AddrType "mac")) }} {{ $addr.Vendor }}
+            {{ end }} {{ end }}
+          </td>
+        </tr>
+        <tr>
+          <td class="text-right">OS</td>
+          <td class="text-left">
+            {{ if eq (len .Host.OS.Matches) 0 }}
+            Unknown OS
+            {{ else }}
+            {{ (index .Host.OS.Matches 0).Name }}
+            {{ end }}
+          </td>
+        </tr>
+        <tr>
+          <td class="text-right">Status</td>
+          <td class="text-left">
+            {{ if eq .Host.Status.State "up" }}
+            <span class="text-success">Up ({{ .Host.Status.Reason }}) </span>
+            {{ else }}
+            <span class="text-error">Down ({{ .Host.Status.Reason }})</span>
+            {{ end }}
+          </td>
+        </tr>
+        <tr>
+          <td class="text-right">Hostnames</td>
+          <td class="text-left">
+            {{ range $idx, $host := .Host.Hostnames }} {{ if $idx }}, {{ end }} {{ $host.Name }} {{ end }}
+          </td>
+        </tr>
+        <tr>
+          <td class="text-right">Uptime</td>
+          <td class="text-left">
+            {{ if and (eq .Host.Status.State "up") .Host.Uptime.Lastboot }}
+            {{ .Host.Uptime.Lastboot }} ({{ .Host.Uptime.Seconds }}s)
+            {{ else }}
+            Unknown
+            {{ end }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr class="hr my-4 w-2/3 mx-auto">
+
+    <table class="mx-auto w-2/3 table">
+      <thead>
+        <tr>
+          <th class="text-center font-semibold">Port</th>
+          <th class="text-center font-semibold">Protocol</th>
+          <th class="text-center font-semibold">Service</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range $i, $p := .Host.Ports }}
+        <tr>
+          <td class="text-center">{{ $p.ID }}</td>
+          <td class="text-center">{{ $p.Protocol }}</td>
+          <td class="text-center">{{ $p.Service.Name }}</td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+
+  <input type="radio" name="device-info-tabs" role="tab" class="tab" aria-label="Json" />
+  <div role="tabpanel" class="tab-content whitespace-pre">
+    <a target="_blank" href="/api/deviceJson/{{ .UUID }}/{{ .IDX }}" class="btn btn-accent btn-outline mb-4">View in new Tab {{ component "icons/external.svg" }} </a>
+    {{ .Json }}
+  </div>
 </div>

@@ -228,51 +228,66 @@ func ScansHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 }
 
-func MakeDeviceInfo(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	uuid, err := uuid.Parse(ps.ByName("uuid"))
-	if err != nil {
-		yagll.Errorf("Error parsing uuid: %s", err.Error())
-		return
+func MakeDeviceInfoHandler(jsonOnly bool) func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+		uuid, err := uuid.Parse(ps.ByName("uuid"))
+		if err != nil {
+			yagll.Errorf("Error parsing uuid: %s", err.Error())
+			return
+		}
+
+		idx, err := strconv.Atoi(ps.ByName("idx"))
+		if err != nil {
+			yagll.Errorf("Error parsing idx: %s", err.Error())
+			return
+		}
+
+		scan, ok := scanManager.Scans[uuid]
+		if !ok {
+			yagll.Errorf("Scan not found: %s", uuid.String())
+			return
+		}
+
+		if idx < 0 || idx >= len(scan.Result.Hosts) {
+			yagll.Errorf("Index out of range: %d", idx)
+			return
+		}
+
+		host := scan.Result.Hosts[idx]
+
+		if jsonOnly {
+			jsonHost, err := json.MarshalIndent(host, "", "  ")
+			if err != nil {
+				yagll.Errorf("Error parsing json: %s", err.Error())
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(jsonHost)
+			return
+		}
+
+		tpl, err := attachTemplateFunctions(template.New("deviceInfo.html")).ParseFS(templates, "templates/components/deviceInfo.html")
+		if err != nil {
+			yagll.Errorf("Error parsing template: %s", err.Error())
+			return
+		}
+
+		jsonHost, err := json.MarshalIndent(host, "", "  ")
+		if err != nil {
+			yagll.Errorf("Error parsing json: %s", err.Error())
+			return
+		}
+
+		testData := map[string]interface{}{
+			"Title": "Device Info",
+			"Host":  host,
+			"Json":  template.HTML(string(jsonHost)),
+			"UUID":  uuid.String(),
+			"IDX":   idx,
+		}
+
+		tpl.Execute(w, testData)
 	}
-
-	idx, err := strconv.Atoi(ps.ByName("idx"))
-	if err != nil {
-		yagll.Errorf("Error parsing idx: %s", err.Error())
-		return
-	}
-
-	scan, ok := scanManager.Scans[uuid]
-	if !ok {
-		yagll.Errorf("Scan not found: %s", uuid.String())
-		return
-	}
-
-	if idx < 0 || idx >= len(scan.Result.Hosts) {
-		yagll.Errorf("Index out of range: %d", idx)
-		return
-	}
-
-	host := scan.Result.Hosts[idx]
-
-	tpl, err := attachTemplateFunctions(template.New("deviceInfo.html")).ParseFS(templates, "templates/components/deviceInfo.html")
-	if err != nil {
-		yagll.Errorf("Error parsing template: %s", err.Error())
-		return
-	}
-
-	jsonHost, err := json.Marshal(host)
-	if err != nil {
-		yagll.Errorf("Error parsing json: %s", err.Error())
-		return
-	}
-
-	testData := map[string]interface{}{
-		"Title": "Device Info",
-		"Host":  host,
-		"Json":  string(jsonHost),
-	}
-
-	tpl.Execute(w, testData)
 }
 
 func main() {
@@ -318,13 +333,14 @@ func main() {
 	router.GET("/x/graph", Component("Graph", "components/graph.html"))
 	router.GET("/x/analytics", Component("Analytics", "components/analytics.html"))
 	router.GET("/x/history", Component("History", "components/history.html"))
-	router.GET("/x/deviceInfo/:uuid/:idx", MakeDeviceInfo)
+	router.GET("/x/deviceInfo/:uuid/:idx", MakeDeviceInfoHandler(false))
 
 	// Websocket routes
 	router.GET("/ws/scans", ScansHandler)
 
 	// API routes
 	router.POST("/api/startScan", StartScan)
+	router.GET("/api/deviceJson/:uuid/:idx", MakeDeviceInfoHandler(true))
 
 	// Error handling
 	router.NotFound = http.HandlerFunc(getErrorHandler(404, "Page not found"))
