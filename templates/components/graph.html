@@ -18,7 +18,8 @@
   function setupDeviceInfo() {
     const div = document.querySelector(".device-info");
     const nav = document.querySelector(".navbar");
-    const toaster = document.querySelector("#toaster").querySelector("div");
+    const toaster = document.querySelector("#toaster");
+    if (toaster) toaster = toaster.querySelector("div");
 
     if (!div || !nav || !toaster) return;
 
@@ -33,7 +34,7 @@
   function hideDeviceInfo() {
     const div = document.querySelector(".device-info");
     const toaster = document.querySelector("#toaster").querySelector("div");
-    if (!div) return;
+    if (!div || !toaster) return;
 
     div.style.left = document.documentElement.clientWidth + "px";
     toaster.style.right = "0px";
@@ -42,7 +43,7 @@
   function showDeviceInfo() {
     const div = document.querySelector(".device-info");
     const toaster = document.querySelector("#toaster").querySelector("div");
-    if (!div) return;
+    if (!div || !toaster) return;
 
     div.style.left =
       document.documentElement.clientWidth - div.clientWidth + "px";
