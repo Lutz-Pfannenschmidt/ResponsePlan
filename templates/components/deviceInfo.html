@@ -36,7 +36,7 @@
             {{ if eq (len .Host.OS.Matches) 0 }}
             Unknown OS
             {{ else }}
-            {{ (index .Host.OS.Matches 0).Name }}
+            {{ (index .Host.OS.Matches 0).Name }} ({{ (index .Host.OS.Matches 0).Accuracy }}% accuracy)
             {{ end }}
           </td>
         </tr>
