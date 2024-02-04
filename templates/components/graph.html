@@ -18,7 +18,7 @@
   function setupDeviceInfo() {
     const div = document.querySelector(".device-info");
     const nav = document.querySelector(".navbar");
-    const toaster = document.querySelector("#toaster");
+    let toaster = document.querySelector("#toaster");
     if (toaster) toaster = toaster.querySelector("div");
 
     if (!div || !nav || !toaster) return;
