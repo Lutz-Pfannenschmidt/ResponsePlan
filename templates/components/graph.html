@@ -8,18 +8,27 @@
 
 <div class="device-info w-1/3 border-l p-2 border-accent z-1 bottom-0 absolute overflow-hidden">
   <button x-init @click="hideDeviceInfo()">{{ component "icons/x.svg" }}</button>
+  <span id="device-loading" class="loading loading-dots text-accent w-[20%]"></span>
   <div id="device-info" class="overflow-y-scroll h-full"><!-- htmx injects the device info here --></div>
 </div>
 
 <script>
   window.addEventListener("DOMContentLoaded", setupDeviceInfo);
   window.addEventListener("resize", setupDeviceInfo);
+  window.addEventListener("htmx:afterSwap", (detail) => {
+    if (detail.target.id !== "device-info") return
+
+    const loading = document.querySelector("#device-loading");
+    if (!loading) return;
+    loading.style.display = "none";
+  });
 
   function setupDeviceInfo() {
     const div = document.querySelector(".device-info");
     const nav = document.querySelector(".navbar");
     let toaster = document.querySelector("#toaster");
     if (toaster) toaster = toaster.querySelector("div");
+    const loading = document.querySelector("#device-loading");
 
     if (!div || !nav || !toaster) return;
 
@@ -28,22 +37,32 @@
 
     div.style.height = window.innerHeight - nav.clientHeight + "px";
     toaster.style.right = "0px";
+    loading.style.display = "block";
+    loading.style.position = "absolute";
+    loading.style.top = "50%";
+    loading.style.left = "50%";
+    loading.style.transform = "translate(-50%, -50%)";
+    div.querySelector("#device-info").style.zIndex = "-1";
     hideDeviceInfo();
   }
 
   function hideDeviceInfo() {
     const div = document.querySelector(".device-info");
     const toaster = document.querySelector("#toaster").querySelector("div");
-    if (!div || !toaster) return;
+    const loading = document.querySelector("#device-loading");
+    if (!div || !toaster || !loading) return;
 
     div.style.left = document.documentElement.clientWidth + "px";
     toaster.style.right = "0px";
+    loading.style.display = "block";
+    div.querySelector("#device-info").innerHTML = "";
   }
 
   function showDeviceInfo() {
     const div = document.querySelector(".device-info");
     const toaster = document.querySelector("#toaster").querySelector("div");
-    if (!div || !toaster) return;
+    const loading = document.querySelector("#device-loading");
+    if (!div || !toaster || !loading) return;
 
     div.style.left =
       document.documentElement.clientWidth - div.clientWidth + "px";
