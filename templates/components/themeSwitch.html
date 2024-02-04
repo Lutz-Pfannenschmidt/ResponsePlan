@@ -33,6 +33,7 @@
       document
           .getElementById("theme-switch")
           .addEventListener("click", toggleTheme);
+      localStorage.setItem("theme", currentTheme);
       setIcon();
   });
 </script>
