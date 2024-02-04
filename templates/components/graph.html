@@ -28,6 +28,11 @@
     setupDeviceInfo();
   });
 
+  window.addEventListener("htmx:beforeSwap", (detail) => {
+    if (detail.target.id === "device-info") return
+    setupDeviceInfo();
+  });
+
   function setupDeviceInfo() {
     const div = document.querySelector(".device-info");
     const nav = document.querySelector(".navbar");
