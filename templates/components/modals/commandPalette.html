@@ -5,22 +5,33 @@
 
 <script>
   const possibilities = [
-    { name: 'python', description: 'Test1' },
-    { name: 'javascript', description: 'Test2' },
-    { name: 'go', description: 'Test3' },
-    { name: 'rust', description: 'Test4' },
-    { name: 'c', description: 'Test5'}
+    { name: 'python', does: logName},
+    { name: 'javascript', does: logName},
+    { name: 'c++', does: logName},
+    { name: 'c#', does: logName},
+    { name: 'java', does: logName},
+    { name: 'ruby', does: logName},
+    { name: 'typescript', does: logName},
+    { name: 'go', does: logName},
+    { name: 'rust', does: logName},
+    { name: 'kotlin', does: logName},
+    { name: 'swift', does: logName},
+    { name: 'dart', does: logName},
   ]
 
   const suggestions = document.getElementById('suggestions')
 
+  function logName(e) {
+    console.log(e.target.textContent)
+  }
+
   function updateSuggestions() {
     suggestions.innerHTML = ''
     for (const possibility of possibilities) {
-      suggestions.innerHTML += `<li x-show="'${possibility.name}'.includes(search)">
-        <div class="m-4">
-            <strong>${possibility.name}</strong>
-            <span>${possibility.description}</span>
+      suggestions.innerHTML +=
+      `<li x-show="'${possibility.name}'.includes(search)" @click="${possibility.does}" x-transition>
+        <div class="pt-4">
+            <h3>${possibility.name}</h3>
         </div>
       </li>`
     }
