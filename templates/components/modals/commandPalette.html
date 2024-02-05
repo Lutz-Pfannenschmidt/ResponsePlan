@@ -1,4 +1,4 @@
-<div x-init="updateSuggestions()" x-data="{ search: '' }">
+<div x-init="updateSuggestions()" onclick="commandModal.close()" x-data="{ search: '' }">
   <input x-model="search" type="text" placeholder="Type here" class="input input-bordered w-full" />
   <ul id="suggestions"></ul>
 </div>
