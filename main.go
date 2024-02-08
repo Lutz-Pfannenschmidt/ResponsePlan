@@ -81,10 +81,20 @@ func attachTemplateFunctions(t *template.Template) *template.Template {
 			return string(text)
 		},
 		"svg": func() template.HTML {
-			for id := range scanManager.Scans {
-				return template.HTML(svg.OverwriteRunToSvg(scanManager, id))
+			if len(scanManager.Scans) == 0 {
+				return template.HTML("No scans")
 			}
-			return template.HTML("No scans")
+
+			var latestScanId uuid.UUID
+			var latestScanTime int64
+			for id, scan := range scanManager.Scans {
+				if scan.StartTime > latestScanTime {
+					latestScanTime = scan.StartTime
+					latestScanId = id
+				}
+			}
+
+			return template.HTML(svg.OverwriteRunToSvg(scanManager, latestScanId))
 		},
 	})
 }
