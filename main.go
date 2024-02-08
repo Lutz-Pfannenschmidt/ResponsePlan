@@ -190,9 +190,15 @@ func StartScan(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		yagll.Debugf("%s: %s", key, data[key])
 	}
 
+	ports, err := strconv.Atoi(scans.TransformPortRange(data["ports"]))
+	if err != nil {
+		yagll.Errorf("Error parsing ports: %s", err.Error())
+		panic(err)
+	}
+
 	id := scanManager.StartScan(&scans.ScanConfig{
 		Targets:  data["ipRange"],
-		Ports:    scans.TransformPortRange(data["ports"]),
+		Ports:    ports,
 		OSScan:   data["osDetection"] == "true",
 		TopPorts: data["portMode"] == "top",
 	}, func(id uuid.UUID) {

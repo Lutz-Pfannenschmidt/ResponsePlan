@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/serialize"
@@ -22,7 +23,7 @@ type Scan struct {
 
 type ScanConfig struct {
 	Targets  string `json:"targets"`
-	Ports    string `json:"ports"`
+	Ports    int    `json:"ports"`
 	OSScan   bool   `json:"osScan"`
 	TopPorts bool   `json:"topPorts"`
 }
@@ -47,17 +48,28 @@ func (sm *ScanManager) StartScan(config *ScanConfig, callback func(uuid.UUID)) u
 	}
 
 	go func() {
-		scanner, err := nmap.NewScanner(
-			context.Background(),
 
-			nmap.WithTargets("192.168.188.96", "192.168.188.149", "192.168.188.152", "192.168.188.1"),
-			nmap.WithPorts(config.Ports),
-			nmap.WithOSDetection(),
+		opts := []nmap.Option{
+			nmap.WithTargets(config.Targets),
 			nmap.WithVerbosity(3),
 			nmap.WithServiceInfo(),
 			nmap.WithFilterHost(func(h nmap.Host) bool {
 				return h.Status.State != "down"
 			}),
+		}
+
+		if config.OSScan {
+			opts = append(opts, nmap.WithOSDetection())
+		}
+		if config.TopPorts {
+			opts = append(opts, nmap.WithMostCommonPorts(config.Ports))
+		} else {
+			opts = append(opts, nmap.WithPorts(strconv.Itoa(config.Ports)))
+		}
+
+		scanner, err := nmap.NewScanner(
+			context.Background(),
+			opts...,
 		)
 		if err != nil {
 			yagll.Errorf("Error creating scanner: %s", err.Error())
