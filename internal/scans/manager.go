@@ -23,7 +23,7 @@ type Scan struct {
 
 type ScanConfig struct {
 	Targets  string `json:"targets"`
-	Ports    int    `json:"ports"`
+	Ports    string `json:"ports"`
 	OSScan   bool   `json:"osScan"`
 	TopPorts bool   `json:"topPorts"`
 }
@@ -61,10 +61,17 @@ func (sm *ScanManager) StartScan(config *ScanConfig, callback func(uuid.UUID)) u
 		if config.OSScan {
 			opts = append(opts, nmap.WithOSDetection())
 		}
+		ports, err := strconv.Atoi(config.Ports)
+		if err != nil {
+			yagll.Errorf("Error parsing ports: %s", err.Error())
+			yagll.Debugf("Using default ports")
+			ports = 100
+		}
+
 		if config.TopPorts {
-			opts = append(opts, nmap.WithMostCommonPorts(config.Ports))
+			opts = append(opts, nmap.WithMostCommonPorts(ports))
 		} else {
-			opts = append(opts, nmap.WithPorts(strconv.Itoa(config.Ports)))
+			opts = append(opts, nmap.WithPorts(config.Ports))
 		}
 
 		scanner, err := nmap.NewScanner(
