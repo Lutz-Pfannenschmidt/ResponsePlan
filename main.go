@@ -304,6 +304,16 @@ func MakeDeviceInfoHandler(jsonOnly bool) func(w http.ResponseWriter, r *http.Re
 	}
 }
 
+func addServerHeader(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Add the Server header
+		w.Header().Set("Server", "ResponsePlan")
+
+		// Call the next handler
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	parser := argparse.NewParser("ResponsePlan", "A simple web application for incidence response.")
 
@@ -386,7 +396,7 @@ func main() {
 	}
 	yagll.Infof("Starting server on port %d", *port)
 	yagll.Infoln(yagll.Red + "Server running on http://" + url + yagll.Reset)
-	err = http.ListenAndServe(url, router)
+	err = http.ListenAndServe(url, addServerHeader(router))
 	if err != nil {
 		yagll.Errorf("Error starting server: %s", err.Error())
 	}
