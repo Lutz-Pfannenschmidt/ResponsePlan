@@ -61,14 +61,14 @@ func (sm *ScanManager) StartScan(config *ScanConfig, callback func(uuid.UUID)) u
 		if config.OSScan {
 			opts = append(opts, nmap.WithOSDetection())
 		}
-		ports, err := strconv.Atoi(config.Ports)
-		if err != nil {
-			yagll.Errorf("Error parsing ports: %s", err.Error())
-			yagll.Debugf("Using default ports")
-			ports = 100
-		}
 
 		if config.TopPorts {
+			ports, err := strconv.Atoi(config.Ports)
+			if err != nil {
+				yagll.Errorf("Error parsing ports: %s", err.Error())
+				yagll.Debugf("Using default ports")
+				ports = 100
+			}
 			opts = append(opts, nmap.WithMostCommonPorts(ports))
 		} else {
 			opts = append(opts, nmap.WithPorts(config.Ports))
