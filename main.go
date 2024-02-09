@@ -88,10 +88,14 @@ func attachTemplateFunctions(t *template.Template) *template.Template {
 			var latestScanId uuid.UUID
 			var latestScanTime int64
 			for id, scan := range scanManager.Scans {
-				if scan.StartTime > latestScanTime {
+				if scan != nil && scan.StartTime > latestScanTime {
 					latestScanTime = scan.StartTime
 					latestScanId = id
 				}
+			}
+
+			if latestScanId == uuid.Nil {
+				return template.HTML("No scans")
 			}
 
 			return template.HTML(svg.OverwriteRunToSvg(scanManager, latestScanId))
