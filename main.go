@@ -201,7 +201,6 @@ func StartScan(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 			data[key] = ""
 			yagll.Debugf("Missing key: %s", key)
 		}
-		yagll.Debugf("%s: %s", key, data[key])
 	}
 
 	id := scanManager.StartScan(&scans.ScanConfig{

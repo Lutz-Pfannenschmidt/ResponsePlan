@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"net/url"
 	"strings"
 )
 
@@ -19,9 +20,14 @@ func (e *ParseError) Error() string {
 func ParseBody(body io.ReadCloser) (map[string]string, error) {
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(body)
-	newStr := buf.String()
+	data := buf.String()
 
-	pairs := strings.Split(newStr, "&")
+	data, err := url.QueryUnescape(data)
+	if err != nil {
+		return nil, err
+	}
+
+	pairs := strings.Split(data, "&")
 	result := make(map[string]string)
 	for _, pair := range pairs {
 		kv := strings.Split(pair, "=")
