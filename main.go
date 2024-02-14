@@ -16,11 +16,11 @@ import (
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/htmx"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/scans"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/svg"
+	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/ws"
 	"github.com/Lutz-Pfannenschmidt/yagll"
 	"github.com/google/uuid"
 
 	"github.com/akamensky/argparse"
-	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -32,8 +32,16 @@ var cdnFs embed.FS
 var cdn, _ = fs.Sub(cdnFs, "cdn")
 
 var devMode = false
-var upgrader = websocket.Upgrader{}
 var scanManager = scans.NewScanManager()
+var wsHub = ws.NewHub()
+
+func updateScanStatus() {
+	for _, scan := range scanManager.Scans {
+		if scan.EndTime == 0 {
+			wsHub.Broadcast([]byte(`<div hx-swap-oob="afterbegin:#runningScans"><div class="alert alert-info"><span class="loading loading-ring"></span><span>` + scan.Config.Targets + `</span></div></div>`))
+		}
+	}
+}
 
 func attachTemplateFunctions(t *template.Template) *template.Template {
 	return t.Funcs(template.FuncMap{
@@ -217,28 +225,9 @@ func StartScan(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 func ScansHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	c, err := upgrader.Upgrade(w, r, nil)
-	c.WriteMessage(websocket.TextMessage, []byte(`<div hx-swap-oob="afterbegin:#runningScans"><div class="alert alert-info"><span class="loading loading-ring"></span><span>New message arrived.</span></div></div>`))
-	yagll.Debugf("Connection established with %s", r.RemoteAddr)
-	if err != nil {
-		yagll.Debugf("upgrade: %s", err)
-		return
-	}
-	defer c.Close()
-	defer yagll.Debugln("Connection closed")
-	for {
-		mt, message, err := c.ReadMessage()
-		if err != nil {
-			yagll.Debugf("read: %s", err)
-			break
-		}
-		yagll.Debugf("recv: %s", message)
-		err = c.WriteMessage(mt, []byte(`<div id='content'>resp from server</div>`))
-		if err != nil {
-			yagll.Debugf("write: %s", err)
-			break
-		}
-	}
+	ws.ServeWs(wsHub, w, r)
+
+	updateScanStatus()
 }
 
 func MakeDeviceInfoHandler(jsonOnly bool) func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -339,6 +328,9 @@ func main() {
 		scanManager.LoadFromFile(*infile)
 		yagll.Debugf("Loaded %d scans from file", len(scanManager.Scans))
 	}
+
+	// start the websocket hub
+	go wsHub.Run()
 
 	router := httprouter.New()
 
