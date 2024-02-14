@@ -36,11 +36,14 @@ var scanManager = scans.NewScanManager()
 var wsHub = ws.NewHub()
 
 func updateScanStatus() {
+	msg := `<div hx-swap-oob="afterbegin:#runningScans">`
+	end := `</div>`
 	for _, scan := range scanManager.Scans {
 		if scan.EndTime == 0 {
-			wsHub.Broadcast([]byte(`<div hx-swap-oob="afterbegin:#runningScans"><div class="alert alert-info"><span class="loading loading-ring"></span><span>` + scan.Config.Targets + `</span></div></div>`))
+			msg += `<div class="alert alert-info"><span class="loading loading-ring"></span><span>` + scan.Config.Targets + `:` + scan.Config.Ports + `</span></div>`
 		}
 	}
+	wsHub.Broadcast([]byte(msg + end))
 }
 
 func attachTemplateFunctions(t *template.Template) *template.Template {
