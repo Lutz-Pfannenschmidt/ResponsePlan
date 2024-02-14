@@ -99,7 +99,7 @@ func attachTemplateFunctions(t *template.Template) *template.Template {
 			var latestScanId uuid.UUID
 			var latestScanTime int64
 			for id, scan := range scanManager.Scans {
-				if scan != nil && scan.StartTime > latestScanTime {
+				if scan != nil && scan.EndTime > latestScanTime {
 					latestScanTime = scan.StartTime
 					latestScanId = id
 				}
