@@ -1,1 +1,84 @@
-history
+<div class="overflow-x-auto flex justify-center w-full h-full">
+  <div class="max-w-full md:max-w-[80%] lg:max-w-[60%] m-auto">
+    <label class="form-control w-full">
+      <div class="label">
+        <span class="label-text text-xl">Sort by</span>
+      </div>
+      <select class="select select-bordered text-xl" x-init="sortByData('end', true)">
+        <option selected x-init @click="sortByData('end', true)">Recently Finished</option>
+        <option x-init @click="sortByData('end', false)">Oldest Finished</option>
+        <option x-init @click="sortByData('start', true)">Recently Started</option>
+        <option x-init @click="sortByData('start', false)">Oldest Started</option>
+      </select>
+    </label>
+    <table class="table w-full text-md md:text-lg lg:text-2xl overflow-x-scroll ">
+      <thead>
+        <tr>
+          <th>Started at</th>
+          <th>Completed at</th>
+          <th>Targets</th>
+          <th>Ports</th>
+          <th>OS Detection</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range $k, $v := allScans }}
+        <tr class="hover" id="scan-{{ $k }}" data-start="{{ $v.StartTime }}" data-end="{{ $v.EndTime }}">
+          <td x-init x-text="formatTime({{ $v.StartTime }})">{{ $v.StartTime }}</td>
+          <td x-init x-text="formatTime({{ $v.EndTime }})">{{ $v.EndTime }}</td>
+          <td>{{ $v.Config.Targets }}</td>
+          <td>{{ if $v.Config.TopPorts }}Top {{ end }}{{ $v.Config.Ports }}</td>
+          {{ if $v.Config.OSScan }}
+          <td class="text-success">{{ component "icons/check.svg" }}</td>
+          {{ else }}
+          <td class="text-error">{{ component "icons/close.svg" }}</td>
+          {{ end }}
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  /**
+   * Format time to human readable format
+   * @param {number} time - Unix timestamp
+   * @returns {string}
+   */
+  function formatTime(time) {
+
+    if (time === 0) {
+      return 'running...';
+    }
+
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const date = new Date(time * 1000);
+    const month = months[date.getMonth()];
+    const day = ('0' + date.getDate()).slice(-2);
+    const year = date.getFullYear();
+    const hours = ('0' + date.getHours()).slice(-2);
+    const minutes = ('0' + date.getMinutes()).slice(-2);
+    const seconds = ('0' + date.getSeconds()).slice(-2);
+    return `${month} ${day} ${year} ${hours}:${minutes}:${seconds}`;
+  }
+
+  /**
+   * Sort table by data attribute in ascending order
+   * @param {string} attr - Data attribute to sort by
+   * @param {boolean} desc - Sort in descending order
+   * @returns {void}
+   */
+  function sortByData(attr, desc) {
+    const tbody = document.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    rows.sort((a, b) => {
+      const aVal = a.getAttribute(`data-${attr}`);
+      const bVal = b.getAttribute(`data-${attr}`);
+      if (aVal == 0) return desc ? -1 : 1;
+      if (bVal == 0) return desc ? 1 : -1;
+      return desc ? bVal - aVal : aVal - bVal;
+    });
+    rows.forEach(row => tbody.appendChild(row));
+  }
+</script>

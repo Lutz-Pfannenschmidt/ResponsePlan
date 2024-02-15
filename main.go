@@ -55,7 +55,7 @@ func attachTemplateFunctions(t *template.Template) *template.Template {
 				input = strings.TrimSpace(data[0])
 			}
 
-			var dat interface{}
+			dat := map[string]interface{}{}
 
 			if input != "" {
 				err := json.Unmarshal([]byte(input), &dat)
@@ -110,6 +110,9 @@ func attachTemplateFunctions(t *template.Template) *template.Template {
 			}
 
 			return template.HTML(svg.OverwriteRunToSvg(scanManager, latestScanId))
+		},
+		"allScans": func() map[uuid.UUID]*scans.Scan {
+			return scanManager.Scans
 		},
 	})
 }
