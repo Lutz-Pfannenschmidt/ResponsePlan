@@ -16,7 +16,7 @@
   </div>
 </div>
 
-<div class="device-info w-1/3 border-l p-2 border-accent z-1 bottom-0 absolute overflow-hidden hidden bg-base-100/80">
+<div class="device-info w-1/3 border-l p-2 border-accent z-1 bottom-0 absolute overflow-hidden hidden bg-base-100">
   <button x-init @click="hideDeviceInfo()">{{ component "icons/x.svg" }}</button>
   <span id="device-loading" class="loading loading-dots text-accent w-[20%]"></span>
   <div id="device-info" class="overflow-y-scroll h-full"><!-- htmx injects the device info here --></div>
@@ -106,6 +106,15 @@
   lockBtnWrapper.addEventListener("click", toggleLock)
   unlockBtnWrapper.addEventListener("click", toggleLock)
 
+  for (let group of groups) {
+    let id = group.id
+    let transform = localStorage.getItem(id)
+    if (transform) {
+      let [dx, dy] = transform.split(",")
+      group.setAttribute("transform", `translate(${dx}, ${dy})`)
+    }
+  }
+
   function toggleLock() {
     locked = !locked
     lockBtnWrapper.classList.toggle("hidden")
@@ -139,6 +148,7 @@
     let dx = x - rect.left
     let dy = y - rect.top
     target.setAttribute("transform", `translate(${dx}, ${dy})`)
+    localStorage.setItem(target.id, `${dx},${dy}`)
   }
 
   /**
