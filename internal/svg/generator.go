@@ -12,9 +12,11 @@ import (
 var svgTemplate = `
 {{ $w := mul .Amount 200 }}
 {{ $h := mul .Amount 100 }}
-<svg viewBox="0 0 {{ $w }}px {{ $h }}px" width="{{ $w }}px" heigth="{{ $h }}px" xmlns="http://www.w3.org/2000/svg">
+<svg id="graph" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
 {{ $routers := 0 }}
 	{{ range $i, $Host := .Run.Hosts }}
+
+	<g id="{{ uuid }}/{{ $i }}">
 
 		{{ $router := couldBeRouter (index $Host.Addresses 0).Addr }}
 		{{ $color := "currentColor" }}
@@ -36,6 +38,8 @@ var svgTemplate = `
 		{{ else }}
 		<text x="{{ add $x 45 }}" y="{{ add $y 32 }}" fill="currentColor" font-size="16px" font-family="monospace">Unknown OS</text>
 		{{ end }}
+
+	</g>
 	{{ end }}
 </svg>
 `
