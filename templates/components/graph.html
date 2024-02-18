@@ -27,7 +27,7 @@
   <div id="device-info" class="overflow-y-scroll h-full"><!-- htmx injects the device info here --></div>
 </div>
 
-<script x-init="setupDeviceInfo()" >
+<script x-init="setupDeviceInfo()">
   window.addEventListener("DOMContentLoaded", setupDeviceInfo);
   window.addEventListener("resize", setupDeviceInfo);
   window.addEventListener("htmx:afterSwap", (detail) => {
@@ -115,10 +115,15 @@
 
   resetBtnWrapper.addEventListener("click", resetGraph)
 
-  for (let group of groups) {
-    let id = group.id
-    let transform = localStorage.getItem(id)
-    if (transform) {
+  window.addEventListener("DOMContentLoaded", setupGraph)
+  window.addEventListener("resize", setupGraph)
+
+  function setupGraph() {
+    for (let group of groups) {
+      let id = group.id
+      let transform = localStorage.getItem(id)
+      if (!transform) return
+
       let [dx, dy] = transform.split(",")
       group.setAttribute("transform", `translate(${dx}, ${dy})`)
     }
@@ -126,7 +131,8 @@
 
   function resetGraph() {
     for (let group of groups) {
-      group.setAttribute("transform", `translate(0, 0)`)
+      let origin = group.getAttribute("data-origin") || "0,0"
+      group.setAttribute("transform", `translate(${origin})`)
       localStorage.removeItem(group.id)
     }
   }
@@ -145,7 +151,7 @@
 
     let trgt = e.target
     while (trgt.tagName !== "g") {
-      if (trgt === document.body || !trgt ) return
+      if (trgt === document.body || !trgt) return
       trgt = trgt.parentElement
     }
     target = trgt

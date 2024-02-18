@@ -16,8 +16,6 @@ var svgTemplate = `
 {{ $routers := 0 }}
 	{{ range $i, $Host := .Run.Hosts }}
 
-	<g id="{{ uuid }}/{{ $i }}">
-
 		{{ $router := couldBeRouter (index $Host.Addresses 0).Addr }}
 		{{ $color := "currentColor" }}
 		{{ $idxNoRouter := sub $i $routers}}
@@ -31,15 +29,17 @@ var svgTemplate = `
 			{{ $routers = inc $routers }}
 		{{ end }}
 
-		<rect x="{{ $x }}" y="{{ $y }}" x-init @click="showDeviceInfo()" hx-get="/x/deviceInfo/{{ uuid }}/{{ $i }}" hx-target="#device-info" hx-swap="true" width="40" height="40" rx="5" fill="{{ $color }}" />
-		<text x="{{ add $x 45 }}" y="{{ add $y 16 }}" fill="currentColor" font-size="16px" font-family="monospace">{{ (index $Host.Addresses 0).Addr }}</text>
-		{{ if $Host.OS.Matches }}
-		<text x="{{ add $x 45 }}" y="{{ add $y 32 }}" fill="currentColor" font-size="16px" font-family="monospace">{{ (index $Host.OS.Matches 0).Name }}</text>
-		{{ else }}
-		<text x="{{ add $x 45 }}" y="{{ add $y 32 }}" fill="currentColor" font-size="16px" font-family="monospace">Unknown OS</text>
-		{{ end }}
+		<g id="{{ uuid }}/{{ $i }}" transform="translate({{ $x }}, {{ $y }})" data-origin="{{ $x }},{{ $y }}">
 
-	</g>
+			<rect x="0" y="0" x-init @click="showDeviceInfo()" hx-get="/x/deviceInfo/{{ uuid }}/{{ $i }}" hx-target="#device-info" hx-swap="true" width="40" height="40" rx="5" fill="{{ $color }}" />
+			<text x="45" y="16" fill="currentColor" font-size="16px" font-family="monospace">{{ (index $Host.Addresses 0).Addr }}</text>
+			{{ if $Host.OS.Matches }}
+			<text x="45" y="32" fill="currentColor" font-size="16px" font-family="monospace">{{ (index $Host.OS.Matches 0).Name }}</text>
+			{{ else }}
+			<text x="45" y="32" fill="currentColor" font-size="16px" font-family="monospace">Unknown OS</text>
+			{{ end }}
+
+		</g>
 	{{ end }}
 </svg>
 `
