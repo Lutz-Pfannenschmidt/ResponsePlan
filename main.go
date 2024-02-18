@@ -16,7 +16,6 @@ import (
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/htmx"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/scans"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/svg"
-	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/ws"
 	"github.com/Lutz-Pfannenschmidt/yagll"
 	"github.com/google/uuid"
 
@@ -33,18 +32,6 @@ var cdn, _ = fs.Sub(cdnFs, "cdn")
 
 var devMode = false
 var scanManager = scans.NewScanManager()
-var wsHub = ws.NewHub()
-
-func updateScanStatus() {
-	msg := `<div hx-swap-oob="afterbegin:#runningScans">`
-	end := `</div>`
-	for _, scan := range scanManager.Scans {
-		if scan.EndTime == 0 {
-			msg += `<div class="alert alert-info"><span class="loading loading-ring"></span><span>` + scan.Config.Targets + `:` + scan.Config.Ports + `</span></div>`
-		}
-	}
-	wsHub.Broadcast([]byte(msg + end))
-}
 
 func attachTemplateFunctions(t *template.Template) *template.Template {
 	return t.Funcs(template.FuncMap{
@@ -230,10 +217,14 @@ func StartScan(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	yagll.Debugf("Scan started: %s", id.String())
 }
 
-func ScansHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	ws.ServeWs(wsHub, w, r)
-
-	updateScanStatus()
+func RunningScans(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	msg := ""
+	for _, scan := range scanManager.Scans {
+		if scan.EndTime == 0 {
+			msg += `<div class="alert alert-info !animate-none"><span class="loading loading-ring"></span><span>` + scan.Config.Targets + `:` + scan.Config.Ports + `</span></div>`
+		}
+	}
+	w.Write([]byte(msg))
 }
 
 func MakeDeviceInfoHandler(jsonOnly bool) func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -335,9 +326,6 @@ func main() {
 		yagll.Debugf("Loaded %d scans from file", len(scanManager.Scans))
 	}
 
-	// start the websocket hub
-	go wsHub.Run()
-
 	router := httprouter.New()
 
 	// Serve the CDN
@@ -355,9 +343,7 @@ func main() {
 	router.GET("/x/analytics", Component("Analytics", "components/analytics.html"))
 	router.GET("/x/history", Component("History", "components/history.html"))
 	router.GET("/x/deviceInfo/:uuid/:idx", MakeDeviceInfoHandler(false))
-
-	// Websocket routes
-	router.GET("/ws/scans", ScansHandler)
+	router.GET("/x/runningScans", RunningScans)
 
 	// API routes
 	router.POST("/api/startScan", StartScan)

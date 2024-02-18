@@ -1,4 +1,4 @@
-<div id="toaster" hx-ext="ws" ws-connect="/ws/scans">
-  <div class="toast" id="runningScans" >
+<div id="toaster" hx-get="/x/runningScans" hx-target="#runningScans" hx-swap="innerHTML" hx-trigger="load, every 4s">
+  <div class="toast" id="runningScans">
   </div>
 </div>
