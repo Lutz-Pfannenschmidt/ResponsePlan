@@ -1,9 +1,9 @@
 <button class="{{ .Classes }}" onclick="newScanModal.showModal()">
-    {{ component "icons/network.svg" }}
+    {{ icon "network.svg" }}
 </button>
 <dialog id="newScanModal" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box">
-        {{ component "components/modals/newScan.html" }}
+        {{ component "modals/newScan.html" }}
     </div>
     <form method="dialog" class="modal-backdrop">
         <button>close</button>

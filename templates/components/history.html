@@ -29,9 +29,9 @@
           <td>{{ $v.Config.Targets }}</td>
           <td>{{ if $v.Config.TopPorts }}Top {{ end }}{{ $v.Config.Ports }}</td>
           {{ if $v.Config.OSScan }}
-          <td class="text-success">{{ component "icons/check.svg" }}</td>
+          <td class="text-success">{{ icon "check.svg" }}</td>
           {{ else }}
-          <td class="text-error">{{ component "icons/close.svg" }}</td>
+          <td class="text-error">{{ icon "close.svg" }}</td>
           {{ end }}
         </tr>
         {{ end }}

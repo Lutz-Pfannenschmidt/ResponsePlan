@@ -15,16 +15,17 @@
 </head>
 
 <body class="min-h-screen h-screen w-screen flex flex-col overflow-x-hidden">
-    {{ component "components/navbar.html" }}
+    {{ component "navbar.html" }}
     <div class="flex-grow" id="content">
         {{ if or .Error .ErrorMessage }}
-        {{ component "components/error.html" (string .) }}
+        {{ component "error.html" (string .) }}
         {{ else }}
         {{ if .Component }}
         {{ component .Component }}
         {{ end}}
         {{ end }}
     </div>
-    {{ component "components/runningScans.html" }}
+    {{ component "runningScans.html" }}
 </body>
+
 </html>

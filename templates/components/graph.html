@@ -2,27 +2,27 @@
 
 <div class="toolbar z-1 bottom-0 left-0 absolute m-4">
   <div class="tooltip tooltip-right tooltip-info" data-tip="new network scan">
-    {{ component "components/newScan.html" `{"Classes": "btn btn-square btn-accent btn-outline mr-2"}` }}
+    {{ component "newScan.html" `{"Classes": "btn btn-square btn-accent btn-outline mr-2"}` }}
   </div>
   <div id="lockSvg" class="tooltip tooltip-right tooltip-info" data-tip="edit mode">
     <button class="btn btn-square btn-accent btn-outline mr-2">
-      {{ component "icons/locked.svg" }}
+      {{ icon "locked.svg" }}
     </button>
   </div>
   <div id="unlockSvg" class="tooltip tooltip-right tooltip-info hidden" data-tip="edit mode">
     <button class="btn btn-square btn-accent btn-outline mr-2">
-      {{ component "icons/unlocked.svg" }}
+      {{ icon "unlocked.svg" }}
     </button>
   </div>
   <div id="resetGraph" class="tooltip tooltip-right tooltip-info" data-tip="reset graph">
     <button class="btn btn-square btn-accent btn-outline mr-2">
-      {{ component "icons/reset.svg" }}
+      {{ icon "reset.svg" }}
     </button>
   </div>
 </div>
 
 <div class="device-info w-1/3 border-l p-2 border-accent z-1 bottom-0 absolute overflow-hidden hidden bg-base-100">
-  <button x-init @click="hideDeviceInfo()">{{ component "icons/x.svg" }}</button>
+  <button x-init @click="hideDeviceInfo()">{{ icon "x.svg" }}</button>
   <span id="device-loading" class="loading loading-dots text-accent w-[20%]"></span>
   <div id="device-info" class="overflow-y-scroll h-full"><!-- htmx injects the device info here --></div>
 </div>

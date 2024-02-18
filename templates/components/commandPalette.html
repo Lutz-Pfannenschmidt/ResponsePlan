@@ -1,6 +1,6 @@
 <dialog id="commandModal" class="modal modal-top">
   <div class="modal-box ml-[25%] w-1/2">
-    {{ component "components/modals/commandPalette.html" }}
+    {{ component "modals/commandPalette.html" }}
   </div>
   <form method="dialog" class="modal-backdrop">
     <button>close</button>
@@ -8,7 +8,7 @@
 </dialog>
 
 <div x-init @click="commandModal.showModal()" class="mx-4 p-2 px-4 border-2 border-neutral flex flex-row">
-  {{ component "icons/search.svg" }}
+  {{ icon "search.svg" }}
   <span class="mx-2 md:mr-4 lg:mr-8 text-base-content">
     Search ...
   </span>

@@ -11,19 +11,19 @@
 				<li>
 					<a href="/analytics" hx-push-url="/analytics" hx-trigger="click" hx-get="/x/analytics" hx-target="#content"
 						hx-swap="innerHTML">
-						{{ component "icons/chart.svg" }} Analytics
+						{{ icon "chart.svg" }} Analytics
 					</a>
 				</li>
 				<li>
 					<a href="/graph" hx-push-url="/graph" hx-trigger="click" hx-get="/x/graph" hx-target="#content"
 						hx-swap="innerHTML">
-						{{ component "icons/graph.svg" }} Graph
+						{{ icon "graph.svg" }} Graph
 					</a>
 				</li>
 				<li>
 					<a href="/history" hx-push-url="/history" hx-trigger="click" hx-get="/x/history" hx-target="#content"
 						hx-swap="innerHTML">
-						{{ component "icons/clock.svg" }} History
+						{{ icon "clock.svg" }} History
 					</a>
 				</li>
 			</ul>
@@ -37,27 +37,27 @@
 			<li>
 				<a href="/analytics" hx-push-url="/analytics" hx-trigger="click" hx-get="/x/analytics" hx-target="#content"
 					hx-swap="innerHTML">
-					{{ component "icons/chart.svg" }} Analytics
+					{{ icon "chart.svg" }} Analytics
 				</a>
 			</li>
 			<li>
 				<a href="/graph" hx-push-url="/graph" hx-trigger="click" hx-get="/x/graph" hx-target="#content"
 					hx-swap="innerHTML">
-					{{ component "icons/graph.svg" }} Graph
+					{{ icon "graph.svg" }} Graph
 				</a>
 			</li>
 			<li>
 				<a href="/history" hx-push-url="/history" hx-trigger="click" hx-get="/x/history" hx-target="#content"
 					hx-swap="innerHTML">
-					{{ component "icons/clock.svg" }} History
+					{{ icon "clock.svg" }} History
 				</a>
 			</li>
 		</ul>
 	</div>
 	<div class="navbar-end">
-    {{ component "components/commandPalette.html" }}
-		{{ component "icons/help.svg" }}
-		{{ component "components/themeSwitch.html" }}
+		{{ component "commandPalette.html" }}
+		{{ icon "help.svg" }}
+		{{ component "themeSwitch.html" }}
 	</div>
 </nav>
 <input id="focus" aria-disabled="true" aria-hidden="true" tabindex="-1" class="!opacity-0 !absolute !z-[-999]">

@@ -98,7 +98,8 @@
 
   <input type="radio" name="device-info-tabs" role="tab" class="tab" aria-label="Json" />
   <div role="tabpanel" class="tab-content whitespace-pre">
-    <a target="_blank" href="/api/deviceJson/{{ .UUID }}/{{ .IDX }}" class="btn btn-accent btn-outline mb-4">View in new Tab {{ component "icons/external.svg" }} </a>
+    <a target="_blank" href="/api/deviceJson/{{ .UUID }}/{{ .IDX }}" class="btn btn-accent btn-outline mb-4">View in new
+      Tab {{ icon "external.svg" }} </a>
     {{ .Json }}
   </div>
 </div>
