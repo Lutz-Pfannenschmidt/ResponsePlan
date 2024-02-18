@@ -14,6 +14,11 @@
       {{ component "icons/unlocked.svg" }}
     </button>
   </div>
+  <div id="resetGraph" class="tooltip tooltip-right tooltip-info" data-tip="reset graph">
+    <button class="btn btn-square btn-accent btn-outline mr-2">
+      {{ component "icons/reset.svg" }}
+    </button>
+  </div>
 </div>
 
 <div class="device-info w-1/3 border-l p-2 border-accent z-1 bottom-0 absolute overflow-hidden hidden bg-base-100">
@@ -99,6 +104,8 @@
   let unlockBtnWrapper = document.querySelector(".toolbar #unlockSvg")
   let locked = true
 
+  let resetBtnWrapper = document.querySelector(".toolbar #resetGraph")
+
   document.addEventListener("mousedown", groupMouseDown)
   document.addEventListener("mouseup", groupMouseUp)
   document.addEventListener("mousemove", groupMouseMove)
@@ -106,12 +113,21 @@
   lockBtnWrapper.addEventListener("click", toggleLock)
   unlockBtnWrapper.addEventListener("click", toggleLock)
 
+  resetBtnWrapper.addEventListener("click", resetGraph)
+
   for (let group of groups) {
     let id = group.id
     let transform = localStorage.getItem(id)
     if (transform) {
       let [dx, dy] = transform.split(",")
       group.setAttribute("transform", `translate(${dx}, ${dy})`)
+    }
+  }
+
+  function resetGraph() {
+    for (let group of groups) {
+      group.setAttribute("transform", `translate(0, 0)`)
+      localStorage.removeItem(group.id)
     }
   }
 
