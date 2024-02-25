@@ -29,13 +29,21 @@ type ScanConfig struct {
 }
 
 type ScanManager struct {
-	Scans map[uuid.UUID]*Scan `json:"scans"`
+	Scans    map[uuid.UUID]*Scan `json:"scans"`
+	autosave bool
+	savefile string
 }
 
 func NewScanManager() *ScanManager {
 	return &ScanManager{
 		Scans: make(map[uuid.UUID]*Scan),
 	}
+}
+
+// AutoSave enables autosaving of scans to the given file after each scan
+func (sm *ScanManager) AutoSave(fname string) {
+	sm.autosave = true
+	sm.savefile = fname
 }
 
 func (sm *ScanManager) StartScan(config *ScanConfig, callback func(uuid.UUID)) uuid.UUID {
@@ -94,6 +102,9 @@ func (sm *ScanManager) StartScan(config *ScanConfig, callback func(uuid.UUID)) u
 		sm.Scans[id].EndTime = time.Now().Unix()
 
 		callback(id)
+		if sm.autosave {
+			sm.SaveToFile(sm.savefile)
+		}
 
 	}()
 

@@ -172,6 +172,7 @@ func main() {
 	if !*memory {
 		scanManager.LoadFromFile(*infile)
 		yagll.Debugf("Loaded %d scans from file", len(scanManager.Scans))
+		scanManager.AutoSave(*outfile)
 	}
 
 	router := httprouter.New()
