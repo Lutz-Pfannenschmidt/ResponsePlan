@@ -2,15 +2,17 @@
   <input type="radio" name="device-info-tabs" role="tab" class="tab" aria-label="Mockup" checked />
   <div role="tabpanel" class="tab-content">
     <p class="text-sm text-warning mt-2">for full data, click "Json"</p>
-    <h1 class="text-accent text-center text-2xl font-bold pt-4">{{ range $idx, $addr := .Host.Addresses }} {{ if (and
-      $idx
-      (eq $addr.AddrType "ipv4"))}},{{ end }} {{ if eq $addr.AddrType "ipv4" }} {{ $addr.Addr }} {{ end }} {{ end }}
+    <h1 class="text-accent text-center text-2xl font-bold pt-4">
+      {{ range $idx, $addr := .Host.addresses }}
+      {{ if and $idx (eq $addr.addr_type "ipv4")}},{{ end }}
+      {{ if eq $addr.addr_type "ipv4" }} {{ $addr.addr }} {{ end }}
+      {{ end }}
     </h1>
     <h2 class="text-center text-xl font-semibold">
-      {{ if or (not .Host.Matches) (eq (len .Host.OS.Matches) 0) }}
+      {{ if or (not .Host.matches) (eq (len .Host.os.matches) 0) }}
       Unknown OS
       {{ else }}
-      {{ (index .Host.OS.Matches 0).Name }}
+      {{ (index .Host.os.matches 0).name }}
       {{ end }}
     </h2>
     <hr class="hr my-4 w-2/3 mx-auto">
@@ -19,24 +21,24 @@
         <tr>
           <td class="text-right">MAC Address</td>
           <td class="text-left">
-            {{ range $idx, $addr := .Host.Addresses }} {{ if (and $idx (eq $addr.AddrType "mac")) }} {{ $addr.Addr }} {{
+            {{ range $idx, $addr := .Host.adresses }} {{ if (and $idx (eq $addr.addr_type "mac")) }} {{ $addr.addr }} {{
             end }} {{ end }}
           </td>
         </tr>
         <tr>
           <td class="text-right">Vendor</td>
           <td class="text-left">
-            {{ range $idx, $addr := .Host.Addresses }} {{ if (and $idx (eq $addr.AddrType "mac")) }} {{ $addr.Vendor }}
+            {{ range $idx, $addr := .Host.addresses }} {{ if (and $idx (eq $addr.addr_type "mac")) }} {{ $addr.vendor }}
             {{ end }} {{ end }}
           </td>
         </tr>
         <tr>
           <td class="text-right">OS</td>
           <td class="text-left">
-            {{ if or (not .Host.Matches) (eq (len .Host.OS.Matches) 0) }}
+            {{ if or (not .Host.matches) (eq (len .Host.os.matches) 0) }}
             Unknown OS
             {{ else }}
-            {{ (index .Host.OS.Matches 0).Name }} ({{ (index .Host.OS.Matches 0).Accuracy }}% accuracy)
+            {{ (index .Host.os.matches 0).Name }} ({{ (index .Host.os.matches 0).Accuracy }}% accuracy)
             {{ end }}
           </td>
         </tr>
@@ -44,23 +46,23 @@
           <td class="text-right">Status</td>
           <td class="text-left">
             {{ if eq .Host.Status.State "up" }}
-            <span class="text-success">Up ({{ .Host.Status.Reason }}) </span>
+            <span class="text-success">Up ({{ .Host.status.reason }}) </span>
             {{ else }}
-            <span class="text-error">Down ({{ .Host.Status.Reason }})</span>
+            <span class="text-error">Down ({{ .Host.status.reason }})</span>
             {{ end }}
           </td>
         </tr>
         <tr>
           <td class="text-right">Hostnames</td>
           <td class="text-left">
-            {{ range $idx, $host := .Host.Hostnames }} {{ if $idx }}, {{ end }} {{ $host.Name }} {{ end }}
+            {{ range $idx, $host := .Host.hostnames }} {{ if $idx }}, {{ end }} {{ $host.name }} {{ end }}
           </td>
         </tr>
         <tr>
           <td class="text-right">Uptime</td>
           <td class="text-left">
-            {{ if and (eq .Host.Status.State "up") .Host.Uptime.Lastboot }}
-            {{ .Host.Uptime.Lastboot }} ({{ .Host.Uptime.Seconds }}s)
+            {{ if and (eq .Host.status.state "up") .Host.uptime.lastboot }}
+            {{ .Host.uptime.lastboot }} ({{ .Host.uptime.seconds }}s)
             {{ else }}
             Unknown
             {{ end }}
@@ -80,14 +82,14 @@
         </tr>
       </thead>
       <tbody>
-        {{ range $i, $p := .Host.Ports }}
+        {{ range $i, $p := .Host.ports }}
         <tr>
-          <td class="text-center">{{ $p.ID }}</td>
-          <td class="text-center">{{ $p.Protocol }}</td>
-          <td class="text-center">{{ $p.Service.Name }}</td>
+          <td class="text-center">{{ $p.id }}</td>
+          <td class="text-center">{{ $p.protocol }}</td>
+          <td class="text-center">{{ $p.service.name }}</td>
         </tr>
         {{ end }}
-        {{ if or (not .Host.Ports) (eq (len .Host.Ports) 0) }}
+        {{ if or (not .Host.ports) (eq (len .Host.ports) 0) }}
         <tr>
           <td class="text-center" colspan="3">No open ports found</td>
         </tr>
