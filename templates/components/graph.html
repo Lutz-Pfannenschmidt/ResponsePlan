@@ -39,7 +39,7 @@
   });
 
   window.addEventListener("htmx:afterSwap", (detail) => {
-    if (detail.target.id === "device-info") return
+    if (detail.target.id === "device-info" || detail.target.id === "runningScans") return
     setupDeviceInfo();
   });
 

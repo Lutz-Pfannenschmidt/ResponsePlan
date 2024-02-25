@@ -7,7 +7,7 @@
       (eq $addr.AddrType "ipv4"))}},{{ end }} {{ if eq $addr.AddrType "ipv4" }} {{ $addr.Addr }} {{ end }} {{ end }}
     </h1>
     <h2 class="text-center text-xl font-semibold">
-      {{ if eq (len .Host.OS.Matches) 0 }}
+      {{ if or (not .Host.Matches) (eq (len .Host.OS.Matches) 0) }}
       Unknown OS
       {{ else }}
       {{ (index .Host.OS.Matches 0).Name }}
@@ -33,7 +33,7 @@
         <tr>
           <td class="text-right">OS</td>
           <td class="text-left">
-            {{ if eq (len .Host.OS.Matches) 0 }}
+            {{ if or (not .Host.Matches) (eq (len .Host.OS.Matches) 0) }}
             Unknown OS
             {{ else }}
             {{ (index .Host.OS.Matches 0).Name }} ({{ (index .Host.OS.Matches 0).Accuracy }}% accuracy)
@@ -87,7 +87,7 @@
           <td class="text-center">{{ $p.Service.Name }}</td>
         </tr>
         {{ end }}
-        {{ if eq (len .Host.Ports) 0 }}
+        {{ if or (not .Host.Ports) (eq (len .Host.Ports) 0) }}
         <tr>
           <td class="text-center" colspan="3">No open ports found</td>
         </tr>

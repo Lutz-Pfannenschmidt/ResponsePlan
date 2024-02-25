@@ -131,7 +131,7 @@ func MakeDeviceInfoHandler(jsonOnly bool) func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
-		html := renderer.RenderComponent("DeviceInfo", false, string(stringData))
+		html := renderer.RenderComponent("deviceInfo.html", false, string(stringData))
 		w.Header().Set("Content-Type", "text/html")
 		w.Write([]byte(html))
 	}

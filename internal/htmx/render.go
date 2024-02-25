@@ -66,7 +66,7 @@ func (r *Renderer) ServeComponent(title, component string, data ...map[string]an
 // The component is expected to be in the "components" directory.
 func (r *Renderer) ServeComponentX(component string, data ...map[string]any) func(w http.ResponseWriter, rq *http.Request, ps httprouter.Params) {
 	return func(w http.ResponseWriter, rq *http.Request, ps httprouter.Params) {
-		tpl, err := r.recursiveParseComponent("index.html").ParseFS(r.fs, "templates/components/"+component)
+		tpl, err := r.recursiveParseComponent(component).ParseFS(r.fs, "templates/components/"+component)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			yagll.Errorf("Error parsing component template: %s", err)
