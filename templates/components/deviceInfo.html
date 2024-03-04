@@ -21,15 +21,22 @@
         <tr>
           <td class="text-right">MAC Address</td>
           <td class="text-left">
-            {{ range $idx, $addr := .Host.adresses }} {{ if (and $idx (eq $addr.addr_type "mac")) }} {{ $addr.addr }} {{
-            end }} {{ end }}
+            {{ range $idx, $addr := .Host.addresses }}
+            {{ if (and $idx (eq $addr.addr_type "mac")) }}
+            {{ $addr.addr }}
+            {{ end }}
+            {{ end }}
           </td>
         </tr>
         <tr>
           <td class="text-right">Vendor</td>
           <td class="text-left">
-            {{ range $idx, $addr := .Host.addresses }} {{ if (and $idx (eq $addr.addr_type "mac")) }} {{ $addr.vendor }}
-            {{ end }} {{ end }}
+            {{ range $idx, $addr := .Host.addresses }}
+            {{ if (and $idx (eq $addr.addr_type "mac")) }}
+            {{ $addr.vendor }}
+            {{ end }}
+            {{ end }}
+            {{ if or (not .Host.matches) (eq (len .Host.os.matches) 0) }} Unknown {{ end }}
           </td>
         </tr>
         <tr>
@@ -45,7 +52,7 @@
         <tr>
           <td class="text-right">Status</td>
           <td class="text-left">
-            {{ if eq .Host.Status.State "up" }}
+            {{ if eq .Host.status.state "up" }}
             <span class="text-success">Up ({{ .Host.status.reason }}) </span>
             {{ else }}
             <span class="text-error">Down ({{ .Host.status.reason }})</span>
@@ -56,6 +63,7 @@
           <td class="text-right">Hostnames</td>
           <td class="text-left">
             {{ range $idx, $host := .Host.hostnames }} {{ if $idx }}, {{ end }} {{ $host.name }} {{ end }}
+            {{ if or (not .Host.hostnames) (eq (len .Host.hostnames) 0) }} Unknown {{ end }}
           </td>
         </tr>
         <tr>
