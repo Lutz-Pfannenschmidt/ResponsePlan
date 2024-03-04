@@ -15,7 +15,7 @@ import (
 
 type Scan struct {
 	Result    *nmap.Run   `json:"result"`
-	Svg       string      `json:"svg"`
+	Svg       string      `json:"-"`
 	StartTime int64       `json:"startTime"`
 	EndTime   int64       `json:"endTime"`
 	Config    *ScanConfig `json:"config"`
