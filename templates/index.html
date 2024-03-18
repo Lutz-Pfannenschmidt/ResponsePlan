@@ -7,6 +7,13 @@
   <script src="/cdn/alpine.min.js" defer></script>
   <link rel="stylesheet" href="/cdn/daisyui.css" />
 
+  <!-- Default Favicon -->
+  <link rel="icon" href="/cdn/white.svg" type="image/svg+xml" />
+
+  <!-- Theme specific Favicons -->
+  <link rel="icon" href="/cdn/black.svg" type="image/svg+xml" media="(prefers-color-scheme: light)" />
+  <link rel="icon" href="/cdn/white.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
+
   {{ if .Title }}
   <title>{{ .Title }} | ResponsePlan</title>
   {{ else }}
