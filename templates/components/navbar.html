@@ -1,86 +1,90 @@
 <nav class="navbar bg-base-100">
-	<div class="navbar-start">
-		<div class="dropdown">
-			<div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
-				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16">
-					</path>
-				</svg>
-			</div>
-			<ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-				<li>
-					<a href="/analytics" hx-push-url="/analytics" hx-trigger="click" hx-get="/x/analytics" hx-target="#content"
-						hx-swap="innerHTML">
-						{{ icon "chart.svg" }} Analytics
-					</a>
-				</li>
-				<li>
-					<a href="/graph" hx-push-url="/graph" hx-trigger="click" hx-get="/x/graph" hx-target="#content"
-						hx-swap="innerHTML">
-						{{ icon "graph.svg" }} Graph
-					</a>
-				</li>
-				<li>
-					<a href="/history" hx-push-url="/history" hx-trigger="click" hx-get="/x/history" hx-target="#content"
-						hx-swap="innerHTML">
-						{{ icon "clock.svg" }} History
-					</a>
-				</li>
-			</ul>
-		</div>
-		<a href="/" class="btn btn-ghost text-xl" hx-push-url="/" hx-trigger="click" hx-get="/x/" hx-target="#content"
-			hx-swap="innerHTML">ResponsePlan
-		</a>
-	</div>
-	<div class="navbar-center hidden lg:flex">
-		<ul class="menu menu-horizontal px-1">
-			<li>
-				<a href="/analytics" hx-push-url="/analytics" hx-trigger="click" hx-get="/x/analytics" hx-target="#content"
-					hx-swap="innerHTML">
-					{{ icon "chart.svg" }} Analytics
-				</a>
-			</li>
-			<li>
-				<a href="/graph" hx-push-url="/graph" hx-trigger="click" hx-get="/x/graph" hx-target="#content"
-					hx-swap="innerHTML">
-					{{ icon "graph.svg" }} Graph
-				</a>
-			</li>
-			<li>
-				<a href="/history" hx-push-url="/history" hx-trigger="click" hx-get="/x/history" hx-target="#content"
-					hx-swap="innerHTML">
-					{{ icon "clock.svg" }} History
-				</a>
-			</li>
-		</ul>
-	</div>
-	<div class="navbar-end">
-		{{ component "commandPalette.html" }}
-		{{ icon "help.svg" }}
-		{{ component "themeSwitch.html" }}
-	</div>
+  <div class="navbar-start">
+    <div class="dropdown">
+      <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16">
+          </path>
+        </svg>
+      </div>
+      <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+        <li>
+          <a href="/analytics" hx-push-url="/analytics" hx-trigger="click" hx-get="/x/analytics" hx-target="#content"
+            hx-swap="innerHTML">
+            {{ icon "chart.svg" }} Analytics
+          </a>
+        </li>
+        <li>
+          <a href="/graph" hx-push-url="/graph" hx-trigger="click" hx-get="/x/graph" hx-target="#content"
+            hx-swap="innerHTML">
+            {{ icon "graph.svg" }} Graph
+          </a>
+        </li>
+        <li>
+          <a href="/history" hx-push-url="/history" hx-trigger="click" hx-get="/x/history" hx-target="#content"
+            hx-swap="innerHTML">
+            {{ icon "clock.svg" }} History
+          </a>
+        </li>
+      </ul>
+    </div>
+    <a href="/" class="btn btn-ghost text-xl" hx-push-url="/" hx-trigger="click" hx-get="/x/" hx-target="#content"
+      hx-swap="innerHTML">ResponsePlan
+    </a>
+  </div>
+  <div class="navbar-center hidden lg:flex">
+    <ul class="menu menu-horizontal px-1">
+      <li>
+        <a href="/analytics" hx-push-url="/analytics" hx-trigger="click" hx-get="/x/analytics" hx-target="#content"
+          hx-swap="innerHTML">
+          {{ icon "chart.svg" }} Analytics
+        </a>
+      </li>
+      <li>
+        <a href="/graph" hx-push-url="/graph" hx-trigger="click" hx-get="/x/graph" hx-target="#content"
+          hx-swap="innerHTML">
+          {{ icon "graph.svg" }} Graph
+        </a>
+      </li>
+      <li>
+        <a href="/history" hx-push-url="/history" hx-trigger="click" hx-get="/x/history" hx-target="#content"
+          hx-swap="innerHTML">
+          {{ icon "clock.svg" }} History
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="navbar-end">
+    {{ component "commandPalette.html" }}
+
+    <a href="https://responseplan.de/docs/" target="_blank" hx-swap="innerHTML">
+      {{ icon "help.svg" }}
+    </a>
+
+    {{ component "themeSwitch.html" }}
+  </div>
 </nav>
 <input id="focus" aria-disabled="true" aria-hidden="true" tabindex="-1" class="!opacity-0 !absolute !z-[-999]">
 
 {{/* Highlight the currently active navbar link */}}
 <script>
-	document.addEventListener("DOMContentLoaded", highlightActiveLink);
-	document.body.addEventListener("htmx:replacedInHistory", highlightActiveLink);
-	document.body.addEventListener("htmx:pushedIntoHistory", highlightActiveLink);
+  document.addEventListener("DOMContentLoaded", highlightActiveLink);
+  document.body.addEventListener("htmx:replacedInHistory", highlightActiveLink);
+  document.body.addEventListener("htmx:pushedIntoHistory", highlightActiveLink);
 
-	function highlightActiveLink() {
-		const element = window.location.pathname;
-		const links = document.querySelectorAll(".navbar a");
-		links.forEach((link) => {
-			/** @type {HTMLElement} */
-			const focus = document.querySelector("#focus");
-			focus.focus();
-			if (link.getAttribute("href") === "/") return
-			if (link.getAttribute("href") !== element) {
-				link.classList.remove("btn-outline", "btn-accent");
-			} else {
-				link.classList.add("btn-outline", "btn-accent");
-			}
-		});
-	}
+  function highlightActiveLink() {
+    const element = window.location.pathname;
+    const links = document.querySelectorAll(".navbar a");
+    links.forEach((link) => {
+      /** @type {HTMLElement} */
+      const focus = document.querySelector("#focus");
+      focus.focus();
+      if (link.getAttribute("href") === "/") return
+      if (link.getAttribute("href") !== element) {
+        link.classList.remove("btn-outline", "btn-accent");
+      } else {
+        link.classList.add("btn-outline", "btn-accent");
+      }
+    });
+  }
 </script>
