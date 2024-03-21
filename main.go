@@ -156,6 +156,7 @@ func main() {
 	expose := parser.Flag("e", "expose", &argparse.Options{Help: "Expose ResponsePlan to lan"})
 	outfile := parser.String("o", "out", &argparse.Options{Help: "The file to save data to", Default: "data.responseplan"})
 	infile := parser.String("i", "in", &argparse.Options{Help: "The file to load data from", Default: "data.responseplan"})
+	// custom := parser.String("s", "scan", &argparse.Options{Help: "Provide a custon nmap command (e.g. 'ResponsePlan -s 'nmap -sS -p 80,443')"})
 
 	err := parser.Parse(os.Args)
 	if err != nil {
