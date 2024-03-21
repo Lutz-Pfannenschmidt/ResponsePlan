@@ -1,27 +1,32 @@
 <div class="overflow-hidden w-full h-full">{{ svg }}</div>
 
-<div class="toolbar z-1 bottom-0 left-0 absolute m-4">
-  <div class="tooltip tooltip-right tooltip-info" data-tip="new network scan">
-    {{ component "newScan.html" `{"Classes": "btn btn-square btn-accent btn-outline mr-2"}` }}
+<div class="toolbar z-1 bottom-0 left-0 absolute m-4 flex flex-col gap-3">
+  <div id="editActions" class="hidden">
+    <div id="resetGraph" class="tooltip tooltip-right tooltip-info" data-tip="reset graph">
+      <button class="btn btn-square btn-accent btn-outline mr-2">
+        {{ icon "reset.svg" }}
+      </button>
+    </div>
   </div>
-  <div id="lockSvg" class="tooltip tooltip-right tooltip-info" data-tip="edit mode">
-    <button class="btn btn-square btn-accent btn-outline mr-2">
-      {{ icon "locked.svg" }}
-    </button>
-  </div>
-  <div id="unlockSvg" class="tooltip tooltip-right tooltip-info hidden" data-tip="edit mode">
-    <button class="btn btn-square btn-accent btn-outline mr-2">
-      {{ icon "unlocked.svg" }}
-    </button>
-  </div>
-  <div id="resetGraph" class="tooltip tooltip-right tooltip-info" data-tip="reset graph">
-    <button class="btn btn-square btn-accent btn-outline mr-2">
-      {{ icon "reset.svg" }}
-    </button>
+  <div>
+    <div class="tooltip tooltip-right tooltip-info" data-tip="new network scan">
+      {{ component "newScan.html" `{"Classes": "btn btn-square btn-accent btn-outline mr-2"}` }}
+    </div>
+    <div id="lockSvg" class="tooltip tooltip-right tooltip-info" data-tip="edit mode">
+      <button class="btn btn-square btn-accent btn-outline mr-2">
+        {{ icon "locked.svg" }}
+      </button>
+    </div>
+    <div id="unlockSvg" class="tooltip tooltip-right tooltip-info hidden" data-tip="edit mode">
+      <button class="btn btn-square btn-accent btn-outline mr-2">
+        {{ icon "unlocked.svg" }}
+      </button>
+    </div>
   </div>
 </div>
 
-<div class="device-info w-1/3 border-l p-2 border-accent z-1 bottom-0 absolute overflow-hidden hidden bg-base-100">
+<div
+  class="device-info w-1/3 border-l p-2 border-accent z-1 bottom-0 absolute overflow-hidden hidden bg-base-100/70 backdrop-blur-lg">
   <button x-init @click="hideDeviceInfo()">{{ icon "x.svg" }}</button>
   <span id="device-loading" class="loading loading-dots text-accent w-[20%]"></span>
   <div id="device-info" class="overflow-y-scroll h-full"><!-- htmx injects the device info here --></div>
@@ -104,6 +109,8 @@
   let unlockBtnWrapper = document.querySelector(".toolbar #unlockSvg")
   let locked = true
 
+  let editActions = document.querySelector("#editActions")
+
   let resetBtnWrapper = document.querySelector(".toolbar #resetGraph")
 
   document.addEventListener("mousedown", groupMouseDown)
@@ -141,6 +148,7 @@
     locked = !locked
     lockBtnWrapper.classList.toggle("hidden")
     unlockBtnWrapper.classList.toggle("hidden")
+    editActions.classList.toggle("hidden")
   }
 
   /**
