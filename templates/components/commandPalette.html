@@ -7,14 +7,12 @@
   </form>
 </dialog>
 
-<div x-init @click="commandModal.showModal()" class="mx-4 p-2 px-4 border-2 border-neutral flex flex-row">
+<label x-init @click="showModal()" @input="showModal()" class="input input-bordered flex items-center gap-2 mx-4">
   {{ icon "search.svg" }}
-  <span class="mx-2 md:mr-4 lg:mr-8 text-base-content">
-    Search ...
-  </span>
-  <kbd class="kbd kbd-sm mr-2">ctrl</kbd>
+  <input id="search-dummy" type="text" placeholder="Search" />
+  <kbd class="kbd kbd-sm">Ctrl</kbd>
   <kbd class="kbd kbd-sm">P</kbd>
-</div>
+</label>
 
 <script>
   window.addEventListener('keydown', keydownHandler);
@@ -24,8 +22,13 @@
   */
   function keydownHandler(event) {
     if (event.ctrlKey && event.code === 'KeyP') {
-      commandModal.showModal()
+      showModal()
       event.preventDefault();
     };
+  }
+
+  function showModal() {
+    commandModal.showModal()
+    document.getElementById('search-dummy').value = ''
   }
 </script>
