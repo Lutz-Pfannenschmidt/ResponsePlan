@@ -4,10 +4,16 @@ clean:
 
 build:
 	make clean
+	mkdir -p dist
+	cd tty2web && make tty2web
+	cp tty2web/tty2web dist/tty2web
 	go build -o dist/ResponsePlan main.go
 
 dev:
 	make clean
+	mkdir -p dist
+	cd tty2web && make tty2web
+	cp tty2web/tty2web dist/tty2web
 	clear
 	gow -c -e=go,html,svg run . -d
 
