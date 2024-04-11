@@ -1,6 +1,0 @@
-tty2web
-bindata/static
-builds
-js/node_modules/*
-go.mod
-go.sum
