@@ -13,6 +13,7 @@ import (
 
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/htmx"
 	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/scans"
+	"github.com/Lutz-Pfannenschmidt/ResponsePlan/internal/tty2web"
 	"github.com/Lutz-Pfannenschmidt/yagll"
 	"github.com/google/uuid"
 
@@ -176,6 +177,11 @@ func main() {
 		scanManager.AutoSave(*outfile)
 	}
 
+	// check for tty2web
+	if !tty2web.CheckInstall() {
+		yagll.Errorln(yagll.Red + "NOTE: please install https://github.com/kost/tty2web to use th webSSH feature!" + yagll.Reset)
+	}
+
 	router := httprouter.New()
 	renderer = htmx.NewRenderer(&devMode, &templates, scanManager)
 
@@ -229,7 +235,7 @@ func main() {
 		url = "0.0.0.0:" + strconv.Itoa(*port)
 	}
 	yagll.Infof("Starting server on port %d", *port)
-	yagll.Infoln(yagll.Red + "Server running on http://" + url + yagll.Reset)
+	yagll.Infoln(yagll.Green + "Server running on http://" + url + yagll.Reset)
 	err = http.ListenAndServe(url, addServerHeader(router))
 	if err != nil {
 		yagll.Errorf("Error starting server: %s", err.Error())
