@@ -32,6 +32,9 @@ var devMode = false
 var scanManager = scans.NewScanManager()
 var renderer *htmx.Renderer
 
+var tty2webPath = "tty2web"
+var useTty2web = true
+
 func StartScan(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	yagll.Debugln("Starting scan")
 
@@ -157,6 +160,7 @@ func main() {
 	expose := parser.Flag("e", "expose", &argparse.Options{Help: "Expose ResponsePlan to lan"})
 	outfile := parser.String("o", "out", &argparse.Options{Help: "The file to save data to", Default: "data.responseplan"})
 	infile := parser.String("i", "in", &argparse.Options{Help: "The file to load data from", Default: "data.responseplan"})
+	customTty2webPath := parser.String("", "tty2web", &argparse.Options{Help: "The path to the tty2web binary", Default: "tty2web"})
 	// custom := parser.String("s", "scan", &argparse.Options{Help: "Provide a custon nmap command (e.g. 'ResponsePlan -s 'nmap -sS -p 80,443')"})
 
 	err := parser.Parse(os.Args)
@@ -177,9 +181,16 @@ func main() {
 		scanManager.AutoSave(*outfile)
 	}
 
-	// check for tty2web
-	if !tty2web.CheckInstall() {
+	if *customTty2webPath != tty2webPath {
+		tty2webPath = *customTty2webPath
+		yagll.Infof("Using custom tty2web path: %s", tty2webPath)
+		if !tty2web.CheckCustomInstall(tty2webPath) {
+			yagll.Errorf(yagll.Red+"Custom tty2web path not found: %s"+yagll.Reset, tty2webPath)
+			useTty2web = false
+		}
+	} else if !tty2web.CheckInstall() {
 		yagll.Errorln(yagll.Red + "NOTE: please install https://github.com/kost/tty2web to use th webSSH feature!" + yagll.Reset)
+		useTty2web = false
 	}
 
 	router := httprouter.New()
