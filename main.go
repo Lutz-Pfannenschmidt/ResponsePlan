@@ -63,7 +63,7 @@ func StartScan(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		yagll.Debugf("Scan finished: %s", id.String())
 	})
 
-	w.Write([]byte(id.String()))
+	renderer.Redirect("/graph", w, r)
 	yagll.Debugf("Scan started: %s", id.String())
 }
 

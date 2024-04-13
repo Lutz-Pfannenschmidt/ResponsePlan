@@ -1,37 +1,36 @@
 <h3 class="font-bold text-lg">Scan configuration</h3>
-<form hx-post="/api/startScan">
-    <div class="form-control">
-        <div class="label">
-            <span class="label-text text-lg">IP range</span>
-        </div>
-        <input type="text" name="ipRange" placeholder="192.168.1.255/24" class="input input-bordered w-full max-w-xs" />
-        <label class="label cursor-pointer">
-            <span class="label-text">OS detection{{ component "info.html" `{"Tip":
-                "requires sudo"}` }}</span>
-            <input type="checkbox" name="osDetection" checked class="checkbox checkbox-accent" />
-        </label>
-        <label class="label cursor-pointer">
-            <span class="label-text">Port range</span>
-            <input type="radio" name="portMode" value="range" class="radio radio-accent" />
-        </label>
-        <label class="label cursor-pointer">
-            <span class="label-text">Top # Ports</span>
-            <input type="radio" name="portMode" value="top" class="radio radio-accent" />
-        </label>
-        <div class="label">
-            <span class="label-text text-lg">Port range / Top # Ports</span>
-        </div>
-        <input type="text" name="ports" placeholder="1-200,300,600~5 / 1000"
-            class="input input-bordered w-full max-w-xs" />
+<form action="/api/startScan" method="post">
+  <div class="form-control">
+    <div class="label">
+      <span class="label-text text-lg">IP range</span>
     </div>
+    <input type="text" name="ipRange" placeholder="192.168.1.255/24" class="input input-bordered w-full max-w-xs" />
+    <label class="label cursor-pointer">
+      <span class="label-text">OS detection{{ component "info.html" `{"Tip":
+        "requires sudo"}` }}</span>
+      <input type="checkbox" name="osDetection" checked class="checkbox checkbox-accent" />
+    </label>
+    <label class="label cursor-pointer">
+      <span class="label-text">Port range</span>
+      <input type="radio" name="portMode" value="range" class="radio radio-accent" />
+    </label>
+    <label class="label cursor-pointer">
+      <span class="label-text">Top # Ports</span>
+      <input type="radio" name="portMode" value="top" class="radio radio-accent" />
+    </label>
+    <div class="label">
+      <span class="label-text text-lg">Port range / Top # Ports</span>
+    </div>
+    <input type="text" name="ports" placeholder="1-200,300,600~5 / 1000" class="input input-bordered w-full max-w-xs" />
+  </div>
 
-    <div class="modal-action flex w-full justify-between gap-4">
-        <button onclick="newScanModal.close()" type="button"
-            class="flex-grow btn btn-error text-primary-content hover:text-secondary-content ">
-            Close
-        </button>
-        <button type="submit" class="flex-grow btn btn-success text-primary-content hover:text-secondary-content ">
-            Scan
-        </button>
-    </div>
+  <div class="modal-action flex w-full justify-between gap-4">
+    <button onclick="newScanModal.close()" type="button"
+      class="flex-grow btn btn-error text-primary-content hover:text-secondary-content ">
+      Close
+    </button>
+    <button type="submit" class="flex-grow btn btn-success text-primary-content hover:text-secondary-content ">
+      Scan
+    </button>
+  </div>
 </form>
