@@ -22,3 +22,8 @@ run:
 	make build
 	clear
 	./dist/ResponsePlan
+
+install:
+	make build
+	sudo cp dist/ResponsePlan /usr/local/bin/ResponsePlan
+	make clean
