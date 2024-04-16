@@ -236,8 +236,8 @@ func mustMarshal(data interface{}) string {
 	return string(str)
 }
 
-func (r *Renderer) ServeRedirect(path string) func(w http.ResponseWriter, rq *http.Request) {
-	return func(w http.ResponseWriter, rq *http.Request) {
+func (r *Renderer) ServeRedirect(path string) func(w http.ResponseWriter, rq *http.Request, ps httprouter.Params) {
+	return func(w http.ResponseWriter, rq *http.Request, ps httprouter.Params) {
 		http.Redirect(w, rq, path, http.StatusSeeOther)
 	}
 }

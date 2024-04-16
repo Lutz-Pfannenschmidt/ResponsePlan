@@ -200,7 +200,7 @@ func main() {
 	router.ServeFiles("/cdn/*filepath", http.FS(cdn))
 
 	// Routes
-	router.GET("/", renderer.ServeComponent("Graph", "graph.html"))
+	router.GET("/", renderer.ServeRedirect("/graph"))
 	router.GET("/graph", renderer.ServeComponent("Graph", "graph.html"))
 	router.GET("/analytics", renderer.ServeComponent("Analytics", "analytics.html"))
 	router.GET("/history", renderer.ServeComponent("History", "history.html"))
