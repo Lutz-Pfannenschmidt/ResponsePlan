@@ -35,6 +35,8 @@ var renderer *htmx.Renderer
 var tty2webPath = "tty2web"
 var useTty2web = true
 
+var maxSshRetries *int
+
 func StartScan(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	yagll.Debugln("Starting scan")
 
@@ -151,6 +153,19 @@ func addServerHeader(next http.Handler) http.Handler {
 	})
 }
 
+func StartSSH(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	ip := ps.ByName("ip")
+	user := ps.ByName("user")
+	w.Header().Set("Content-Type", "text/html")
+
+	yagll.Infof("Starting SSH to %s@%s", user, ip)
+
+	port := strconv.Itoa(tty2web.StartSSH(ip, user))
+
+	w.Write([]byte(`<meta http-equiv="refresh" content="0; url=http://127.0.0.1:` + port + `">redirecting to http://127.0.0.1:` + port))
+	yagll.Infof("Started SSH on %s", port)
+}
+
 func main() {
 	parser := argparse.NewParser("ResponsePlan", "A simple web application for incidence response.")
 
@@ -161,6 +176,7 @@ func main() {
 	outfile := parser.String("o", "out", &argparse.Options{Help: "The file to save data to", Default: "data.responseplan"})
 	infile := parser.String("i", "in", &argparse.Options{Help: "The file to load data from", Default: "data.responseplan"})
 	customTty2webPath := parser.String("", "tty2web", &argparse.Options{Help: "The path to the tty2web binary", Default: "tty2web"})
+	maxSshRetries = parser.Int("", "tryssh", &argparse.Options{Help: "The maximum number of retries to find a free port for SSH", Default: 10})
 	// custom := parser.String("s", "scan", &argparse.Options{Help: "Provide a custon nmap command (e.g. 'ResponsePlan -s 'nmap -sS -p 80,443')"})
 
 	err := parser.Parse(os.Args)
@@ -216,6 +232,7 @@ func main() {
 	// API routes
 	router.POST("/api/startScan", StartScan)
 	router.GET("/api/deviceJson/:uuid/:idx", MakeDeviceInfoHandler(true))
+	router.GET("/api/startSSH/:user/:ip", StartSSH)
 
 	// Error handling
 	router.NotFound = http.HandlerFunc(renderer.ServeErrorPage(404, "Page not found"))
@@ -236,6 +253,10 @@ func main() {
 				scanManager.SaveToFile(*outfile)
 				yagll.Debugf("Saved %d scans to file", len(scanManager.Scans))
 				yagll.Infoln("Done saving data to data.responseplan")
+			}
+			if useTty2web {
+				tty2web.KillAll()
+				yagll.Infoln("Killed all tty2web instances")
 			}
 			os.Exit(0)
 		}

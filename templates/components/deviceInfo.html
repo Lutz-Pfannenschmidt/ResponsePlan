@@ -1,4 +1,4 @@
-<div role="tablist" class="tabs tabs-bordered w-full">
+<div role="tablist" class="tabs tabs-bordered w-full" id="{{ .UUID }}">
   <input type="radio" name="device-info-tabs" role="tab" class="tab" aria-label="Mockup" checked />
   <div role="tabpanel" class="tab-content">
     <p class="text-sm text-warning mt-2">for full data, click "Json"</p>
@@ -15,6 +15,8 @@
       {{ (index .Host.os.matches 0).name }}
       {{ end }}
     </h2>
+    <input type="text" id="webssh-uname" value="root">
+    <button class="btn" id="webssh-submit">WebSSH</button>
     <hr class="hr my-4 w-2/3 mx-auto">
     <table class="mx-auto w-2/3 table">
       <tbody>
@@ -113,3 +115,23 @@
     {{ .Json }}
   </div>
 </div>
+
+<script>
+  window.ips = `{{ range $idx, $addr := .Host.addresses }}{{ if and $idx (eq $addr.addr_type "ipv4")}},{{ end }}{{ if eq $addr.addr_type "ipv4" }}{{ $addr.addr }}{{ end }}{{ end }}`;
+  window.wrapper = document.getElementById('{{ .UUID }}');
+  window.websshSubmit = document.getElementById('webssh-submit');
+  window.websshUname = document.getElementById('webssh-uname');
+
+  window.websshSubmit.addEventListener('click', () => {
+    const uname = websshUname.value;
+    if (!uname) return;
+
+    const url = new URL(window.location.href);
+    const ip = window.ips.split(',')[0] || "127.0.0.1";
+    url.pathname = '/api/startSSH/' + uname + '/' + ip;
+    const modifiedUrl = url.toString();
+
+    window.open(modifiedUrl, '_blank');
+
+  });
+</script>
