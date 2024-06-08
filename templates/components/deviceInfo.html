@@ -15,8 +15,10 @@
       {{ (index .Host.os.matches 0).name }}
       {{ end }}
     </h2>
-    <input type="text" id="webssh-uname" value="root">
-    <button class="btn" id="webssh-submit">WebSSH</button>
+    <div class="mx-auto w-2/3">
+      <input type="text" class="w-[60%] my-[1.5em] px-2 h-8 float-left" id="webssh-uname" placeholder="username">
+      <button class="btn btn-accent w-[30%] h-8 float-right my-4" id="webssh-submit">WebSSH</button>
+    </div>
     <hr class="hr my-4 w-2/3 mx-auto">
     <table class="mx-auto w-2/3 table">
       <tbody>
