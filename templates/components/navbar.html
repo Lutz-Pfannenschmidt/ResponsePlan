@@ -8,9 +8,9 @@
         </svg>
       </div>
       <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-        <li>
-          <a href="/analytics" hx-push-url="/analytics" hx-trigger="click" hx-get="/x/analytics" hx-target="#content"
-            hx-swap="innerHTML">
+        <li class="disabled cursor-not-allowed">
+          <a href="/" hx-push-url="/" hx-trigger="click" hx-get="/x/" hx-target="#content" hx-swap="innerHTML"
+            class="disabled cursor-not-allowed">
             {{ icon "chart.svg" }} Analytics
           </a>
         </li>
@@ -34,9 +34,9 @@
   </div>
   <div class="navbar-center hidden lg:flex">
     <ul class="menu menu-horizontal px-1">
-      <li>
-        <a href="/analytics" hx-push-url="/analytics" hx-trigger="click" hx-get="/x/analytics" hx-target="#content"
-          hx-swap="innerHTML">
+      <li class="disabled cursor-not-allowed">
+        <a href="/" hx-push-url="/" hx-trigger="click" hx-get="/x/" hx-target="#content" hx-swap="innerHTML"
+          class="disabled cursor-not-allowed">
           {{ icon "chart.svg" }} Analytics
         </a>
       </li>
